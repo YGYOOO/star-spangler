@@ -6,3 +6,16 @@ body {
 a {
   color: #00B7FF;
 }
+
+.login{
+  width:430px;
+  height:305px;
+  margin:0 auto !important;
+  margin-top: 70px !important;
+}
+
+.login2{
+  width:320px;
+  height:300px;
+  margin:0 auto;
+}

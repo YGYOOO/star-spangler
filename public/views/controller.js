@@ -7,3 +7,20 @@ Document.controller('documentsController', ['$scope', '$resource',
     $scope.articles = Articles.query();
   }
 ]);
+
+Document.controller('loginController', ['$scope', '$resource', '$location',
+  function($scope, $resource, $location){
+    var login = $resource('/api/login');
+
+    $scope.login = function(){
+      var body = {emailAddress: $scope.emailAddress,
+                  password: $scope.password
+                  };
+      login.save(body, function(loggedUser, responseHeaders){
+        if(loggedUser){
+          $location.path('/admin');
+        }
+      });
+    };
+  }
+]);
