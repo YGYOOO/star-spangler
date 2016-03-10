@@ -11,6 +11,7 @@ Document.controller('documentsController', ['$scope', '$resource',
 Document.controller('loginController', ['$scope', '$resource', '$location',
   function($scope, $resource, $location){
     var login = $resource('/api/login');
+    
 
     $scope.login = function(){
       var body = {emailAddress: $scope.emailAddress,
