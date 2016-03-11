@@ -4,9 +4,9 @@ var http = require('http');
 var https = require('https');
 var users = require('./starSpanglerDb.js');
 
-router.get('/', function(req, res, next) {
-   res.sendFile( 'index.html', { root : __dirname + "/../public" } );
-});
+// router.get('/', function(req, res, next) {
+//    res.sendFile( 'index.html', { root : __dirname + "/../public" } );
+// });
 
 
 var remoteGet = function(options, callback){
@@ -58,16 +58,13 @@ router.get('/api/document', function(req, res, next){
 
 router.post('/api/login', function(req, res, next){
   users.userFindOne(req.body.emailAddress, function(err, result){
-    if(err){
-      console.log('-1');
-    }
-    else if(result.password === req.body.password){
+    if(!(result === null) && result.password === req.body.password){
       req.session.user = result;
       res.send(result);
       console.log('logged in');
     }
     else{
-      console.log('-2');
+      console.log('-1');
     }
   });
 });
@@ -76,7 +73,7 @@ var requireAuthentication = function(req, res, next){
   if(req.session && req.session.user){
     users.userFindOne(req.session.user.emailAddress, function(err, result){
       if(!err && result){
-        req.session.user = user;
+        req.session.user = result;
         next();
       }
       else{
@@ -97,6 +94,10 @@ router.post('/api/users', function(req, res, next){
   users.userCreate(req.body, function(err, result){
     res.send(result);
   });
+});
+
+router.get('/api/user', function(req, res){
+  res.send(req.session.user);
 });
 
 module.exports = router;

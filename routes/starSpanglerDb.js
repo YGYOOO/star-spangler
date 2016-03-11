@@ -15,11 +15,11 @@ var createUser = function(db, user, callback){
 var findOneUser = function(db, emailAddress, callback){
   db.collection('user').findOne({emailAddress: emailAddress}, function(err, thing){
     db.close();
-    if(err){
-      callback(err, null);
+    if(thing){
+      callback(null, thing);
     }
     else{
-      callback(null, thing);
+      callback(null, null);
     }
   })
 }

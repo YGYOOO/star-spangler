@@ -7,8 +7,12 @@ app.config(['$routeProvider', function($routeProvider){
       controller: 'loginController'
     }).
     when('/admin',{
-      templateUrl: 'views/admin.html',
-      controller: 'documentsController'
+      templateUrl: 'views/manageUser.html',
+      controller: 'manageUserController'
+    }).
+    when('/admin/manageUser',{
+      templateUrl: 'views/manageUser.html',
+      controller: 'manageUserController'
     }).
     otherwise({
       redirectTo: '/'

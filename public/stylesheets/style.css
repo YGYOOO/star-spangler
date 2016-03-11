@@ -19,3 +19,24 @@ a {
   height:300px;
   margin:0 auto;
 }
+
+nav{
+  position:fixed;
+  top:0px;
+  left:0px;
+}
+
+#addUser{
+  width: 300px;
+  margin:0 auto;
+  text-align: center
+}
+#manageUser{
+  width: 80%;
+  margin:0 auto;
+  margin-top: 50px;
+}
+
+td{
+  font-weight: normal;
+}
