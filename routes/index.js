@@ -96,8 +96,26 @@ router.post('/api/users', function(req, res, next){
   });
 });
 
-router.get('/api/user', function(req, res){
+router.get('/api/user', function(req, res, next){
   res.send(req.session.user);
+});
+
+router.get('/api/users', function(req, res, next){
+  users.usersFind(function(err, result){
+    if(err){
+      res.send(err);
+    }
+    else{
+      res.send(result);
+    }
+  });
+});
+
+router.put('/api/users/:emailAddress', function(req, res, next){
+  console.log(req.body.userType);
+  users.userTypeUpdate(req.params.emailAddress, req.body.userType , function(err, status){
+    console.log(status);
+  });
 });
 
 module.exports = router;

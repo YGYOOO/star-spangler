@@ -24,6 +24,52 @@ var findOneUser = function(db, emailAddress, callback){
   })
 }
 
+var findUsers = function(db, callback){
+  db.collection('user').find().toArray(function(err, results){
+    db.close();
+    if(results){
+      callback(null, results);
+    }
+    else{
+      callback(null, null);
+    }
+  });
+}
+
+var updateUserType = function(db, e, type, callback){
+  db.collection('user').update({emailAddress: e}, {$set: {userType: type}}, function(err, count, result){
+    db.close();
+    if(result){
+      callback(null, result);
+    }
+    else{
+      callback(err, null);
+    }
+  });
+}
+
+module.exports.userTypeUpdate = function(e, type, callback){
+  mongoClient.connect(url, function(err, db){
+    if(err){
+      callback(err, null);
+    }
+    else {
+      updateUserType(db, e, type, callback);
+    }
+  });
+}
+
+module.exports.usersFind = function(callback){
+  mongoClient.connect(url, function(err, db){
+    if(err){
+      callback(err, null)
+    }
+    else{
+      findUsers(db, callback);
+    }
+  });
+}
+
 module.exports.userFindOne = function(emailAddress, callback){
   mongoClient.connect(url, function(err, db){
     if(err){

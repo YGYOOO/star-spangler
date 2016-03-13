@@ -29,14 +29,22 @@ nav{
 #addUser{
   width: 300px;
   margin:0 auto;
+  margin-top: 35px;
   text-align: center
 }
 #manageUser{
-  width: 80%;
+  width: 60%;
   margin:0 auto;
-  margin-top: 50px;
+margin-top: 20px;
 }
 
 td{
   font-weight: normal;
+}
+
+.leftPanel{
+  position:absolute;
+  top:80px;
+  left:20px;
+  text-align: center;
 }

@@ -6,13 +6,13 @@ app.config(['$routeProvider', function($routeProvider){
       templateUrl: 'views/login.html',
       controller: 'loginController'
     }).
-    when('/admin',{
-      templateUrl: 'views/manageUser.html',
+    when('/manageUsers',{
+      templateUrl: 'views/manageUsers.html',
       controller: 'manageUserController'
     }).
-    when('/admin/manageUser',{
-      templateUrl: 'views/manageUser.html',
-      controller: 'manageUserController'
+    when('/manageDocuments',{
+      templateUrl: 'views/manageDocuments.html',
+      controller: 'manageDocumentController'
     }).
     otherwise({
       redirectTo: '/'

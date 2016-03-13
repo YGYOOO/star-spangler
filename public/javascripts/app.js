@@ -3,9 +3,9 @@ var createUser = function(){
     firstName: 'yifan',
     lastName: 'gu',
     userName: 'yifan',
-    emailAddress: 'gu',
+    emailAddress: '594487125@qq.com',
     password: 'gu',
-    userType: 'admin',
+    userType: 'user',
     avatarImage: '',
     favoriteThings:{ thing1: 'swim', thing2: 'music' }
   };
