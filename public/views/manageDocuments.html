@@ -1,0 +1,42 @@
+<nav ng-init="getUser()">
+  <div class="nav-wrapper teal lighten-2">
+    <a href="#" class="brand-logo center ">Star Spangler</a>
+    <ul id="nav-mobile" class="left hide-on-med-and-down">
+      <li><a href="/#/manageUsers">Manage Users</a></li>
+      <li><a href="/#/manageDocuments">Manage Documents</a></li>
+    </ul>
+    <ul id="nav-mobile" class="right hide-on-med-and-down">
+      <li><a href="sass.html">{{user.userName}}</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+<div class="document">
+  <ul class="collapsible" data-collapsible="accordion">
+    <li ng-repeat="article in articles.results">
+      <div class="grey lighten-5 documentNumber" >
+        <i class="tiny material-icons" >label_outline</i>{{article.document_number}}
+        <i class="material-icons" style="float:right; margin-top:-3px" ng-click="addToList(article.document_number)">add</i>
+      </div>
+      <div class="collapsible-header">{{article.title}}
+      </div>
+      <div class="collapsible-body">
+        <p align="left" style="padding-bottom:10px">&nbsp;&nbsp;&nbsp;&nbsp;{{article.abstract}}</p>
+        <a href="{{article.html_url}}" class="" style="margin-bottom:10px">Details</a>
+      </div>
+    </li>
+  </ul>
+  <!-- <div class="card-panel" ng-repeat="article in articles.results">
+    <h5>{{article.title}}</h5>
+    {{article.abstract}}
+  </div> -->
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+$('.collapsible').collapsible({
+  accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+});
+});
+</script>

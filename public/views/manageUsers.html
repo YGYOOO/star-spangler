@@ -2,8 +2,8 @@
   <div class="nav-wrapper teal lighten-2">
     <a href="#" class="brand-logo center ">Star Spangler</a>
     <ul id="nav-mobile" class="left hide-on-med-and-down">
-      <li><a href="/#/manageUsers">Manage User</a></li>
-      <li><a href="/#/manageDocuments">JavaScript</a></li>
+      <li><a href="/#/manageUsers">Manage Users</a></li>
+      <li><a href="/#/manageDocuments">Manage Documents</a></li>
     </ul>
     <ul id="nav-mobile" class="right hide-on-med-and-down">
       <li><a href="sass.html">{{user.userName}}</a></li>
@@ -11,33 +11,32 @@
   </div>
 </nav>
 
-<!-- <div class="leftPanel">
-  <a class="waves-effect waves-light btn">Add User</a>
-</div> -->
 <div id="addUser">
   <div class="card-panel" style="text-align: center;">
     <div class="input-field" style="float:left; margin-top:0px;">
-      <input id="first_name" ng-model="firstName" type="text" class="validate">
-      <label for="first_name">Email Address</label>
+      <input id="emailAddress" ng-model="emailAddress" type="text" class="validate">
+      <label for="emailAddress">Email Address</label>
     </div>
     <div>
-      <a class="btn-floating waves-effect waves-light red" style="margin-top:5px"><i class="material-icons">add</i></a>
+      <a class="btn-floating waves-effect waves-light red" style="margin-top:5px" ng-click="addUser()"><i class="material-icons">add</i></a>
     </div>
   </div>
 </div>
+
 <div id="manageUser" class="card-panel">
   <table>
     <thead>
       <tr>
         <th>Email Address</th>
-        <th>Admin</th>
+        <th width="20%">Admin</th>
+        <th width="17%">Add To List</th>
       </tr>
     </thead>
     <tbody>
       <tr ng-repeat="user in users">
         <td>{{user.emailAddress}}</td>
         <td>
-          <div class="switch" ng-switch on="user.userType">
+          <div class="switch" ng-switch on="user.userType" style="margin-left:-10px">
             <label ng-switch-when="admin">
               <input type="checkbox" ng-model="check" ng-init="check=true" ng-change="changeType('{{user.emailAddress}}', this)">
               <span class="lever"></span>
@@ -47,6 +46,9 @@
               <span class="lever"></span>
             </label>
           </div>
+        </td>
+        <td style="text-align:center">
+          <i class="material-icons" style=" margin-top:-3px" ng-click="addToList(user.emailAddress)">add</i>
         </td>
       </tr>
     </tbody>

@@ -7,6 +7,12 @@ a {
   color: #00B7FF;
 }
 
+.container{
+  width: 90% !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+}
+
 .login{
   width:430px;
   height:305px;
@@ -24,6 +30,7 @@ nav{
   position:fixed;
   top:0px;
   left:0px;
+  z-index: 999;
 }
 
 #addUser{
@@ -33,9 +40,9 @@ nav{
   text-align: center
 }
 #manageUser{
-  width: 60%;
+  width: 600px;
   margin:0 auto;
-margin-top: 20px;
+  margin-top: 20px;
 }
 
 td{
@@ -47,4 +54,48 @@ td{
   top:80px;
   left:20px;
   text-align: center;
+}
+
+.document {
+  position:relative;
+  top:30px;
+  width: 800px;
+  margin: 0 auto;
+}
+
+.selectedPanel{
+  z-index:900;
+  position: absolute;;
+  width: 308px;
+  top:100px;
+  left:-310px;
+}
+.popUp{
+  animation: pop 1s;
+  left:0px;
+}
+@keyframes pop{
+  from{left:-310px;}
+  to{left:0px;}
+}
+.dNumber{
+  float:left;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.addDocument{
+  float: right;
+  /*margin-top:-1px;
+  z-index: 800;*/
+}
+
+.documentNumber{
+  height: 19px;
+  line-height: 19px;
+  vertical-align:middle;
+}
+
+.chip{
+  margin: 2px;
 }

@@ -10,6 +10,7 @@ var users = require('./starSpanglerDb.js');
 
 
 var remoteGet = function(options, callback){
+  console.log(options);
   var req = https.request(options, function(res){
     var output = [];
 
@@ -35,26 +36,6 @@ var remoteGet = function(options, callback){
 
   req.end();
 };
-
-router.get('/api/document', function(req, res, next){
-  var host = 'www.federalregister.gov';
-  var type = 'RULE';
-  var keyword = 'china';
-
-  // var path = '/articles.json?per_page=20&order=relevance&conditions[term]='
-  // + keyword + '&conditions[type]=' + type;
-
-  var path = '/api/v1/agencies'
-  var options = {
-    host: host,
-    path: path,
-    method:'GET'
-  };
-
-  remoteGet(options, function(status, data){
-    res.status(status).send(data);
-  })
-});
 
 router.post('/api/login', function(req, res, next){
   users.userFindOne(req.body.emailAddress, function(err, result){
@@ -91,8 +72,12 @@ var requireAuthentication = function(req, res, next){
 router.use('/api', requireAuthentication);
 
 router.post('/api/users', function(req, res, next){
-  users.userCreate(req.body, function(err, result){
-    res.send(result);
+  users.userCreate(req.body.emailAddress, function(err, result){
+    if(result){
+      users.userFindOne(req.body.emailAddress, function(err, result){
+        res.send(result);
+      })
+    }
   });
 });
 
@@ -116,6 +101,27 @@ router.put('/api/users/:emailAddress', function(req, res, next){
   users.userTypeUpdate(req.params.emailAddress, req.body.userType , function(err, status){
     console.log(status);
   });
+});
+
+router.get('/api/document', function(req, res, next){
+  var host = 'www.federalregister.gov';
+  var type = 'RULE';
+  var keyword = 'china';
+
+  // var path = '/articles.json?per_page=20&order=relevance&conditions[term]='
+  // + keyword + '&conditions[type]=' + type;
+
+  var path = '/api/v1/articles?order=relevance'
+  var options = {
+    host: host,
+    path: path,
+    method:'GET'
+  };
+
+  remoteGet(options, function(status, data){
+    console.log(typeof data);
+    res.status(status).send(data);
+  })
 });
 
 module.exports = router;

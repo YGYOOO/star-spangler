@@ -13,3 +13,14 @@ var createUser = function(){
 
   $.ajax(url, {type: 'POST', data: body});
 }
+
+var createDocuments = function(){
+  var a ='';
+  $('.userChip').each(function(){
+    a = a + $( this ).text() + ';';
+  });
+  $('.documentChip').each(function(){
+    a = a + $( this ).text() + ';';
+  });
+  alert(a);
+}

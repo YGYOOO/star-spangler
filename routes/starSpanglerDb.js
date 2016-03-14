@@ -1,13 +1,23 @@
 var mongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/starSpangler";
 
-var createUser = function(db, user, callback){
+var createUser = function(db, emailAddress, password, callback){
+  user ={
+    firstName: '',
+    lastName: '',
+    userName: '',
+    emailAddress: emailAddress,
+    password: password,
+    userType: 'user',
+    avatarImage: '',
+    favoriteThings:{}
+  }
   db.collection('user').insertOne(user, function(err, writeResult){
     if(writeResult.result.ok !== 1){
       callback(err, null);
     }
     else{
-      callback(null, user);
+      callback(null, writeResult);
     }
   });
 }
@@ -81,14 +91,14 @@ module.exports.userFindOne = function(emailAddress, callback){
   });
 }
 
-module.exports.userCreate = function(user, callback){
-  console.log('2');
+module.exports.userCreate = function(emailAddress, callback){
+  var password = Math.random().toString(36).slice(-8);
   mongoClient.connect(url, function(err, db){
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     }
     else{
-      createUser(db, user, function(err, result){
+      createUser(db, emailAddress, password, function(err, result){
         db.close();
         if(err){
           callback(err, null);
@@ -97,6 +107,17 @@ module.exports.userCreate = function(user, callback){
           callback(null, result);
         }
       });
+    }
+  });
+}
+
+module.exports.documentsCreate = function(usersList, documentsList){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      createDocuments
     }
   });
 }
