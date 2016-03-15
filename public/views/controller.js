@@ -124,12 +124,13 @@ Document.controller('loginController', ['$scope', '$resource', '$location',
   }
 ]);
 
-Document.controller('viewDocumentsController', ['$scope', '$resource', '$location',
-function($scope, $resource, $location){
+Document.controller('viewDocumentsController', ['$scope', '$resource', '$location', '$timeout',
+function($scope, $resource, $location, $timeout){
   $scope.getDocuments = function(emailAddress){
     var Documents = $resource('/api/documents/' + emailAddress);
     $scope.documents = Documents.get();
   };
+
   $scope.getUser = function(){
     $.ajax('/api/user',
     {
@@ -146,13 +147,55 @@ function($scope, $resource, $location){
     var body = {dNumber: dNumber, rank: rank};
     User.update({emailAddress: $scope.user.emailAddress}, body);
   }
+
+  $scope.initRank = function(){
+    $timeout(
+      function(){
+        $.each($scope.user.rankedDocuments, function(index, value){
+          console.log(value.documentNumber + ' ' + value.rank);
+          $('#rate_' + value.documentNumber).addClass('rank' + value.rank);
+        });
+        $(".rank1").rateYo({
+          rating: 1,
+          fullStar: true,
+          starWidth: "22px"
+        });
+        $(".rank2").rateYo({
+          rating: 2,
+          fullStar: true,
+          starWidth: "22px"
+        });
+        $(".rank3").rateYo({
+          rating: 3,
+          fullStar: true,
+          starWidth: "22px"
+        });
+        $(".rank4").rateYo({
+          rating: 4,
+          fullStar: true,
+          starWidth: "22px"
+        });
+        $(".rank5").rateYo({
+          rating: 5,
+          fullStar: true,
+          starWidth: "22px"
+        });
+        $(".rateYo").rateYo({
+          rating: 0,
+          fullStar: true,
+          starWidth: "22px",
+
+        }).on("rateyo.set", function (event, data) {
+          alert('1');
+          $scope.userRank($(event.target).attr('id').split('_')[1], data.rating);
+        });
+      },
+    500);
+  }
 }]).directive('myRepeatDirective', function() {
   return function($scope) {
     if ($scope.$last){
-      $('.star-rating').rating(function(vote, event){
-        var className = $(event.target).parent().parent().attr('class');
-        // $scope.userRank(className.split(' ')[1], vote);
-      });
+      $scope.initRank();
     }
   };
 });

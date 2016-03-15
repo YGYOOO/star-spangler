@@ -110,8 +110,13 @@ td{
   margin: 2px;
 }
 
-.stars{
+/*.stars{
   padding-left: 350px;
   position: relative;
   top:15px;
+}*/
+
+.rateYo{
+  margin:0 auto;
+  margin-top:10px
 }

@@ -18,14 +18,15 @@
       <div class="collapsible-header">{{document.title}}
       </div>
       <div class="collapsible-body">
-        <div grey class="star-rating {{document.document_number}}">
+        <!-- <div grey class="star-rating {{document.document_number}}">
           <input type="radio" class="rating" value="1" />
           <input type="radio" class="rating" value="2" />
           <input type="radio" class="rating" value="3" />
           <input type="radio" class="rating" value="4" />
           <input type="radio" class="rating" value="5" />
-        </div>
-        <p align="left" style="padding-bottom:10px">&nbsp;&nbsp;&nbsp;&nbsp;{{document.abstract}}</p>
+        </div> -->
+        <div class="rateYo" id="rate_{{document.document_number}}"></div>
+        <p align="left" style="padding-bottom:10px; padding-top:10px">&nbsp;&nbsp;&nbsp;&nbsp;{{document.abstract}}</p>
         <a href="{{document.html_url}}" class="" style="margin-bottom:10px">Details</a><br>&nbsp;
       </div>
     </li>

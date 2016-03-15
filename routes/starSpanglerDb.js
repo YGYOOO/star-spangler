@@ -85,15 +85,19 @@ var findDocuments = function(db, emailAddress, callback){
 }
 
 var rateDocument = function(db, e, dNumber, rank, callback){
-  db.collection('user').update({emailAddress: e}, { $addToSet:{rankedDocuments: {documentNumber: dNumber, rank: rank}}},
-    function(err, count, result){
-      if (result) {
-        callback(null, result);
-        console.log('1');
+  db.collection('user').updateOne(
+    {emailAddress : e},
+    { $pull: {rankedDocuments:{documentNumber: dNumber}}},
+    function(err, result){}
+  );
+  db.collection('user').updateOne({emailAddress: e}, { $addToSet:{rankedDocuments: {documentNumber: dNumber, rank: rank}}},
+    function(err, result){
+      if (result.result.nModified > 0) {
+        callback(null, result.result.nModified);
+
       }
       else {
-        callback(err, null);
-        console.log('2');
+        callback(null, result.result.nModified);
       }
     });
 }
