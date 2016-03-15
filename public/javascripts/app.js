@@ -1,3 +1,12 @@
+var addListResult = function(result){
+  if(result){
+    Materialize.toast('Success!', 3000);
+  }
+  else {
+    Materialize.toast('Failed!', 3000);
+  }
+}
+
 var createUser = function(){
   body = {
     firstName: 'yifan',
@@ -15,12 +24,43 @@ var createUser = function(){
 }
 
 var createDocuments = function(){
-  var a ='';
+  var usersL ='';
+  var documentsL = '';
   $('.userChip').each(function(){
-    a = a + $( this ).text() + ';';
+    usersL = usersL + $( this ).text().split('close')[0] + ',';
   });
   $('.documentChip').each(function(){
-    a = a + $( this ).text() + ';';
+    documentsL = documentsL + $( this ).text().split('close')[0] + ',';
   });
-  alert(a);
+  // var usersL = usersList.toString();
+  // var documentsL = documentsList.toString();
+  // url = '/api/documents';
+  // body = {usersList: usersL, documentsList: documentsL};
+  // $.ajax(url, {type: 'POST', data:body, success: function(result){addListResult(result)}});
+  //
+  // usersList = [];
+  // documentsList = [];
+  // $("#selectedPanel").addClass('floatIn');
+  // $("#selectedPanel").removeClass('floatOut');
+  // setTimeout(function(){$("#selectedDocuments").empty();$("#selectedUsers").empty();}, 1500);
+
+  // var usersL = usersList.toString();
+  // var documentsL = documentsList.toString();
+  url = '/api/documents';
+  body = {usersList: usersL, documentsList: documentsL};
+  $.ajax(url, {type: 'POST', data:body, success: function(result){addListResult(result)}});
+
+  usersList = [];
+  documentsList = [];
+  $("#selectedPanel").addClass('floatIn');
+  $("#selectedPanel").removeClass('floatOut');
+  setTimeout(function(){$("#selectedDocuments").empty();$("#selectedUsers").empty();}, 1500);
+}
+
+var closePanel = function(){
+  usersList = [];
+  documentsList = [];
+  $("#selectedPanel").addClass('floatIn');
+  $("#selectedPanel").removeClass('floatOut');
+  setTimeout(function(){$("#selectedDocuments").empty();$("#selectedUsers").empty();}, 1500);
 }

@@ -1,25 +1,5 @@
 var app = angular.module('App', ['ngRoute', 'Document']);
 
-app.service('global', function () {
-    var users = [];
-    var documents = [];
-
-    return {
-        getUsers: function () {
-            return users;
-        },
-        setUsers: function(user) {
-            users.push(user);
-        },
-        getDocuments: function () {
-            return documents;
-        },
-        setDocuments: function(document1) {
-            documents.push(document1);
-        }
-    };
-});
-
 app.config(['$routeProvider', function($routeProvider){
   $routeProvider.
     when('/',{
@@ -34,8 +14,31 @@ app.config(['$routeProvider', function($routeProvider){
       templateUrl: 'views/manageDocuments.html',
       controller: 'manageDocumentsController'
     }).
+    when('/viewDocuments', {
+      templateUrl: 'views/viewDocuments.html',
+      controller: 'viewDocumentsController'
+    }).
     otherwise({
       redirectTo: '/'
     });
 
+    // app.service('global', function () {
+    //     var users = [];
+    //     var documents = [];
+    //
+    //     return {
+    //         getUsers: function () {
+    //             return users;
+    //         },
+    //         setUsers: function(user) {
+    //             users.push(user);
+    //         },
+    //         getDocuments: function () {
+    //             return documents;
+    //         },
+    //         setDocuments: function(document1) {
+    //             documents.push(document1);
+    //         }
+    //     };
+    // });
 }]);

@@ -2,16 +2,21 @@ var mongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/starSpangler";
 
 var createUser = function(db, emailAddress, password, callback){
-  user ={
-    firstName: '',
-    lastName: '',
-    userName: '',
+  user =
+  {
     emailAddress: emailAddress,
     password: password,
     userType: 'user',
-    avatarImage: '',
-    favoriteThings:{}
-  }
+    profile: {
+                firstName: '',
+                lastName: '',
+                userName: '',
+                emailAddress: emailAddress,
+                avatarImage: '',
+                favoriteThings:[]
+              },
+    rankedDocuments: []
+  },
   db.collection('user').insertOne(user, function(err, writeResult){
     if(writeResult.result.ok !== 1){
       callback(err, null);
@@ -56,6 +61,39 @@ var updateUserType = function(db, e, type, callback){
       callback(err, null);
     }
   });
+}
+
+var createDocuments = function(db, usersList, documentsList, callback){
+  db.collection('document').insertOne({usersList: usersList, documentsList: documentsList}, function(err, writeResult){
+    if(writeResult.result.ok !== 1){
+      callback(err, null);
+    }
+    else{
+      callback(null, writeResult);
+    }
+  });
+}
+
+var findDocuments = function(db, emailAddress, callback){
+  var text = ".*gu.*";
+  var documents = '';
+  db.collection('document').find({"usersList" : new RegExp(text)}).toArray(function(err, result){
+    if(result){
+      callback(null, result);
+    }
+  });
+}
+
+var rateDocument = function(db, e, dNumber, rate, callback){
+  db.collection('user').update({emailAddress: e}, { $push:{rankedDocuments: {documentNumber: dNumber, rate: rate}}},
+    function(err, count, result){
+      if (result) {
+        callback(null, result);
+      }
+      else {
+        callback(err, null);
+      }
+    });
 }
 
 module.exports.userTypeUpdate = function(e, type, callback){
@@ -111,13 +149,59 @@ module.exports.userCreate = function(emailAddress, callback){
   });
 }
 
-module.exports.documentsCreate = function(usersList, documentsList){
+module.exports.documentsCreate = function(usersList, documentsList, callback){
   mongoClient.connect(url, function(err, db){
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     }
     else {
-      createDocuments
+      createDocuments(db, usersList, documentsList, function(err, result){
+        db.close();
+        if(err){
+          callback(err, null);
+        }
+        else {
+         callback(null, result);
+        }
+      });
+    }
+  });
+}
+
+module.exports.documentsFind = function(emailAddress, callback){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      findDocuments(db, emailAddress, function(err, result){
+        db.close();
+        if(err){
+          callback(err, null);
+        }
+        else {
+         callback(null, result);
+        }
+      });
+    }
+  });
+}
+
+module.exports.documentRate = function(emailAddress, dNumber, rate, callback){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      rateDocument(db, emailAddress, dNumber, rate, function(err, result){
+        db.close();
+        if(err){
+          callback(err, null);
+        }
+        else {
+          callback(null, result);
+        }
+      });
     }
   });
 }

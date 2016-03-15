@@ -2,20 +2,25 @@
 <html ng-app="App">
   <head>
     <title>Star Spangler</title>
-      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script type="text/javascript">
+      var usersList = [];
+      var documentsList = [];
+    </script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/rating.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-2.2.0.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-route.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-resource.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/js/materialize.min.js"></script>
-<!-- <script src="http://cdnjs.cloudflare.com/ajax/libs/masonry/2.1.08/jquery.masonry.min.js"></script> -->
-    <!-- <script src="javascripts/angular-masonry.js"></script> -->
     <script src="app.js"></script>
     <script src="views/controller.js"></script>
     <script src="javascripts/app.js"></script>
+    <script src="javascripts/rating.js"></script>
   </head>
   <body  class="grey lighten-3" style="text-align:center">
     <div id="selectedPanel" class="card-panel selectedPanel">
@@ -24,7 +29,10 @@
       <hr>
       <div id="selectedUsers">
       </div>
-      <a class="btn-floating waves-effect waves-light" onclick="createDocuments()"><i class="material-icons">add</i></a>
+      <div style="position:relative; top:8px">
+        <a class="btn-floating waves-effect waves-light" onclick="createDocuments()"><i class="fa fa-check"></i></a>
+        <a class="btn-floating waves-effect waves-light" onclick="closePanel()"><i class="fa fa-times"></i></a>
+      </div>
     </div>
     <div class="container" ng-view></div>
   </body>

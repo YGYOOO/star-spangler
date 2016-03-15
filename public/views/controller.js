@@ -18,9 +18,10 @@ Document.controller('documentsController', ['$scope', '$resource',
   }
 ]);
 
-Document.controller('manageUsersController', ['$scope', '$resource', '$location', 'User', 'global',
-  function($scope, $resource, $location, User, global){
+Document.controller('manageUsersController', ['$scope', '$resource', '$location', 'User',
+  function($scope, $resource, $location, User){
     var Users = $resource('/api/users');
+    var useUpdate = $resource
     $scope.users = Users.query();
 
     $scope.getUser = function(){
@@ -48,15 +49,17 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
     }
 
     $scope.addToList = function(email){
-      document.getElementById("selectedPanel").classList.add('popUp');
+      document.getElementById("selectedPanel").classList.add('floatOut');
+      document.getElementById("selectedPanel").classList.remove('floatIn');
       var exist = false;
-      var users = global.getUsers();
-      for(var i=0; i<users.length; i++){
-        if(users[i] === email)
+      // var users = global.getUsers();
+      for(var i=0; i<usersList.length; i++){
+        if(usersList[i] === email)
           exist = true;
       }
       if(!exist){
-        global.setUsers(global.setUsers(email));
+        // global.setUsers(global.setUsers(email));
+        usersList.push(email);
         var child = '<div class="chip userChip" id="tag' + email + '">' + email + '<i class="material-icons">close</i></div>'
         $('#selectedUsers').append(child);
       }
@@ -64,8 +67,8 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
 
 }]);
 
-Document.controller('manageDocumentsController', ['$scope', '$resource', 'global',
-  function($scope, $resource, global){
+Document.controller('manageDocumentsController', ['$scope', '$resource',
+  function($scope, $resource){
     $scope.getUser = function(){
       $.ajax('/api/user',
       {
@@ -74,19 +77,21 @@ Document.controller('manageDocumentsController', ['$scope', '$resource', 'global
         error: function(e){$location.path('/');$scope.$apply()}
       });
     };
-    var Articles = $resource('/api/document');
+    var Articles = $resource('/api/documents');
     $scope.articles = Articles.get();
 
     $scope.addToList = function(number){
-      document.getElementById("selectedPanel").classList.add('popUp');
+      document.getElementById("selectedPanel").classList.add('floatOut');
+      document.getElementById("selectedPanel").classList.remove('floatIn');
       var exist = false;
-      var documents = global.getDocuments()
-      for(var i=0; i<documents.length; i++){
-        if(documents[i] === number)
+      // var documents = global.getDocuments()
+      for(var i=0; i<documentsList.length; i++){
+        if(documentsList[i] === number)
             exist = true;
       }
       if(!exist){
-        global.setDocuments(number);
+        // global.setDocuments(number);
+        documentsList.push(number);
         var child = '<div class="chip documentChip" id="tag' + number + '">' + number + '<i class="material-icons">close</i></div>'
         $('#selectedDocuments').append(child);
       }
@@ -106,9 +111,33 @@ Document.controller('loginController', ['$scope', '$resource', '$location',
           $location.path('/manageUsers');
         }
         else if(loggedUser.userType === 'user'){
-          $location.path('/manageDocuments');
+          $location.path('/viewDocuments');
         }
       });
     };
   }
 ]);
+
+Document.controller('viewDocumentsController', ['$scope', '$resource', '$location',
+function($scope, $resource, $location){
+  $scope.getDocuments = function(emailAddress){
+    var Documents = $resource('/api/documents/' + emailAddress);
+    $scope.documents = Documents.get();
+  };
+  $scope.getUser = function(){
+    $.ajax('/api/user',
+    {
+      type: 'GET',
+      success: function(u){ $scope.user = u;$scope.$apply();$scope.getDocuments(u.emailAddress)},
+      error: function(e){$location.path('/');$scope.$apply()}
+    });
+  }
+}]).directive('myRepeatDirective', function() {
+  return function($scope) {
+    if ($scope.$last){
+      $('.star-rating').rating(function(vote, event){
+        console.log(vote, $(event.target).parent().parent().attr('class'));
+      });
+    }
+  };
+});;

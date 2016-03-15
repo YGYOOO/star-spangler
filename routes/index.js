@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var http = require('http');
 var https = require('https');
-var users = require('./starSpanglerDb.js');
+var star = require('./starSpanglerDb.js');
 
 // router.get('/', function(req, res, next) {
 //    res.sendFile( 'index.html', { root : __dirname + "/../public" } );
@@ -10,7 +10,6 @@ var users = require('./starSpanglerDb.js');
 
 
 var remoteGet = function(options, callback){
-  console.log(options);
   var req = https.request(options, function(res){
     var output = [];
 
@@ -38,7 +37,7 @@ var remoteGet = function(options, callback){
 };
 
 router.post('/api/login', function(req, res, next){
-  users.userFindOne(req.body.emailAddress, function(err, result){
+  star.userFindOne(req.body.emailAddress, function(err, result){
     if(!(result === null) && result.password === req.body.password){
       req.session.user = result;
       res.send(result);
@@ -52,7 +51,7 @@ router.post('/api/login', function(req, res, next){
 
 var requireAuthentication = function(req, res, next){
   if(req.session && req.session.user){
-    users.userFindOne(req.session.user.emailAddress, function(err, result){
+    star.userFindOne(req.session.user.emailAddress, function(err, result){
       if(!err && result){
         req.session.user = result;
         next();
@@ -72,9 +71,9 @@ var requireAuthentication = function(req, res, next){
 router.use('/api', requireAuthentication);
 
 router.post('/api/users', function(req, res, next){
-  users.userCreate(req.body.emailAddress, function(err, result){
+  star.userCreate(req.body.emailAddress, function(err, result){
     if(result){
-      users.userFindOne(req.body.emailAddress, function(err, result){
+      star.userFindOne(req.body.emailAddress, function(err, result){
         res.send(result);
       })
     }
@@ -86,7 +85,7 @@ router.get('/api/user', function(req, res, next){
 });
 
 router.get('/api/users', function(req, res, next){
-  users.usersFind(function(err, result){
+  star.usersFind(function(err, result){
     if(err){
       res.send(err);
     }
@@ -98,19 +97,13 @@ router.get('/api/users', function(req, res, next){
 
 router.put('/api/users/:emailAddress', function(req, res, next){
   console.log(req.body.userType);
-  users.userTypeUpdate(req.params.emailAddress, req.body.userType , function(err, status){
+  star.userTypeUpdate(req.params.emailAddress, req.body.userType , function(err, status){
     console.log(status);
   });
 });
 
-router.get('/api/document', function(req, res, next){
+router.get('/api/documents', function(req, res, next){
   var host = 'www.federalregister.gov';
-  var type = 'RULE';
-  var keyword = 'china';
-
-  // var path = '/articles.json?per_page=20&order=relevance&conditions[term]='
-  // + keyword + '&conditions[type]=' + type;
-
   var path = '/api/v1/articles?order=relevance'
   var options = {
     host: host,
@@ -119,9 +112,51 @@ router.get('/api/document', function(req, res, next){
   };
 
   remoteGet(options, function(status, data){
-    console.log(typeof data);
     res.status(status).send(data);
-  })
+  });
 });
+
+router.post('/api/documents', function(req, res, next){
+  star.documentsCreate(req.body.usersList, req.body.documentsList, function(err, results){
+    if(err){
+      res.send(false);
+    }
+    else {
+      res.send(true);
+    }
+  });
+});
+
+router.get('/api/documents/:emailAddress/type', function(req, res, next){
+  star.documentsFind(req.params.emailAddress, function(err, results){
+    if(results){
+      var documents = '';
+      results.forEach(function(result, i, array){
+        var d = result.documentsList.split(',');
+        d.forEach(function(r){
+          if(!documents.includes(r))
+            documents = documents + r + ',';
+        })
+      });
+      documents = documents.substring(0, documents.length - 1);
+      var host = 'www.federalregister.gov';
+      var path = '/api/v1/articles/' + documents
+      var options = {
+        host: host,
+        path: path,
+        method: 'GET'
+      };
+
+      remoteGet(options, function(status, data){
+        res.status(status).send(data);
+      });
+    }
+    else {
+
+    }
+  });
+});
+
+router.put('/api/users/callba')
 
 module.exports = router;

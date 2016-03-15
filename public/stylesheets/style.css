@@ -70,14 +70,24 @@ td{
   top:100px;
   left:-310px;
 }
-.popUp{
-  animation: pop 1s;
+.floatOut{
+  animation: out 1s;
   left:0px;
 }
-@keyframes pop{
+@keyframes out{
   from{left:-310px;}
   to{left:0px;}
 }
+
+.floatIn{
+  animation: in 1s;
+  left:-310px
+}
+@keyframes in{
+  from{left: 0px}
+  to{left; -310px}
+}
+
 .dNumber{
   float:left;
   text-align: center;
@@ -98,4 +108,10 @@ td{
 
 .chip{
   margin: 2px;
+}
+
+.stars{
+  padding-left: 350px;
+  position: relative;
+  top:15px;
 }

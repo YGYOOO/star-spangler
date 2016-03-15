@@ -5,8 +5,9 @@
       <li><a href="/#/manageUsers">Manage Users</a></li>
       <li><a href="/#/manageDocuments">Manage Documents</a></li>
     </ul>
-    <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <li><a href="sass.html">{{user.userName}}</a></li>
+    <ul id="nav-mobile" ng-switch on="user.userName || 'undefined'" class="right hide-on-med-and-down">
+      <li ng-switch-when="undefined"><a href="/#/">{{user.emailAddress}}</a></li>
+      <li ng-switch-default><a href="/#/">{{user.userName}}</a></li>
     </ul>
   </div>
 </nav>
@@ -23,14 +24,10 @@
       </div>
       <div class="collapsible-body">
         <p align="left" style="padding-bottom:10px">&nbsp;&nbsp;&nbsp;&nbsp;{{article.abstract}}</p>
-        <a href="{{article.html_url}}" class="" style="margin-bottom:10px">Details</a>
+        <a href="{{article.html_url}}" class="" style="margin-bottom:10px">Details</a><br>&nbsp;
       </div>
     </li>
   </ul>
-  <!-- <div class="card-panel" ng-repeat="article in articles.results">
-    <h5>{{article.title}}</h5>
-    {{article.abstract}}
-  </div> -->
 </div>
 
 <script type="text/javascript">

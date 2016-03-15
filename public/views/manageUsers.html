@@ -5,8 +5,9 @@
       <li><a href="/#/manageUsers">Manage Users</a></li>
       <li><a href="/#/manageDocuments">Manage Documents</a></li>
     </ul>
-    <ul id="nav-mobile" class="right hide-on-med-and-down">
-      <li><a href="sass.html">{{user.userName}}</a></li>
+    <ul id="nav-mobile" ng-switch on="user.userName || 'undefined'" class="right hide-on-med-and-down">
+      <li ng-switch-when="undefined"><a href="/#/">{{user.emailAddress}}</a></li>
+      <li ng-switch-default><a href="/#/">{{user.userName}}</a></li>
     </ul>
   </div>
 </nav>
