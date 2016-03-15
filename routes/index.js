@@ -95,7 +95,7 @@ router.get('/api/users', function(req, res, next){
   });
 });
 
-router.put('/api/users/:emailAddress', function(req, res, next){
+router.put('/api/users/:emailAddress/type', function(req, res, next){
   console.log(req.body.userType);
   star.userTypeUpdate(req.params.emailAddress, req.body.userType , function(err, status){
     console.log(status);
@@ -127,7 +127,7 @@ router.post('/api/documents', function(req, res, next){
   });
 });
 
-router.get('/api/documents/:emailAddress/type', function(req, res, next){
+router.get('/api/documents/:emailAddress', function(req, res, next){
   star.documentsFind(req.params.emailAddress, function(err, results){
     if(results){
       var documents = '';
@@ -157,6 +157,12 @@ router.get('/api/documents/:emailAddress/type', function(req, res, next){
   });
 });
 
-router.put('/api/users/callba')
+router.put('/api/users/:emailAddress/rankedDocuments', function(req, res, next){
+  star.documentRate(req.params.emailAddress, req.body.dNumber, req.body.rank, function(err, result){
+    if (result) {
+      res.send(result);
+    }
+  });
+});
 
 module.exports = router;

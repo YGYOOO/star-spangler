@@ -2,13 +2,14 @@
 
 var Document = angular.module('Document', ['ngRoute', 'ngResource']);
 
-
-Document.factory('User', ['$resource', function($resource) {
-return $resource('/api/users/:emailAddress', null,
-    {
-        'update': { method:'PUT' }
-    });
-}]);
+// Document.factory('userRank', ['$resource',
+//     function($resource) {
+//       return $resource('/api/users/:emailAddress/rankedDocuments', null,
+//       {
+//         'update': { method:'PUT' }
+//       });
+//     }
+//   ]);
 
 Document.controller('documentsController', ['$scope', '$resource',
   function($scope, $resource){
@@ -18,11 +19,16 @@ Document.controller('documentsController', ['$scope', '$resource',
   }
 ]);
 
-Document.controller('manageUsersController', ['$scope', '$resource', '$location', 'User',
-  function($scope, $resource, $location, User){
+Document.controller('manageUsersController', ['$scope', '$resource', '$location',
+  function($scope, $resource, $location){
     var Users = $resource('/api/users');
     var useUpdate = $resource
     $scope.users = Users.query();
+
+    var User = $resource('/api/users/:emailAddress/type', null,
+        {
+            'update': { method:'PUT' }
+        });
 
     $scope.getUser = function(){
       $.ajax('/api/user',
@@ -35,10 +41,10 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
 
     $scope.changeType = function(emailAddress, box){
       if(box.check)
-        user= {userType: 'admin'};
+        body= {userType: 'admin'};
       else
-        user= {userType: 'user'};
-      User.update({emailAddress: emailAddress}, user);
+        body= {userType: 'user'};
+      User.update({emailAddress: emailAddress}, body);
       }
 
     $scope.addUser = function(){
@@ -132,12 +138,21 @@ function($scope, $resource, $location){
       error: function(e){$location.path('/');$scope.$apply()}
     });
   }
+  $scope.userRank = function(dNumber, rank){
+    var User = $resource('/api/users/:emailAddress/rankedDocuments', null,
+      {
+          'update': { method:'PUT' }
+      });
+    var body = {dNumber: dNumber, rank: rank};
+    User.update({emailAddress: $scope.user.emailAddress}, body);
+  }
 }]).directive('myRepeatDirective', function() {
   return function($scope) {
     if ($scope.$last){
       $('.star-rating').rating(function(vote, event){
-        console.log(vote, $(event.target).parent().parent().attr('class'));
+        var className = $(event.target).parent().parent().attr('class');
+        // $scope.userRank(className.split(' ')[1], vote);
       });
     }
   };
-});;
+});

@@ -84,14 +84,16 @@ var findDocuments = function(db, emailAddress, callback){
   });
 }
 
-var rateDocument = function(db, e, dNumber, rate, callback){
-  db.collection('user').update({emailAddress: e}, { $push:{rankedDocuments: {documentNumber: dNumber, rate: rate}}},
+var rateDocument = function(db, e, dNumber, rank, callback){
+  db.collection('user').update({emailAddress: e}, { $addToSet:{rankedDocuments: {documentNumber: dNumber, rank: rank}}},
     function(err, count, result){
       if (result) {
         callback(null, result);
+        console.log('1');
       }
       else {
         callback(err, null);
+        console.log('2');
       }
     });
 }
@@ -187,13 +189,13 @@ module.exports.documentsFind = function(emailAddress, callback){
   });
 }
 
-module.exports.documentRate = function(emailAddress, dNumber, rate, callback){
+module.exports.documentRate = function(emailAddress, dNumber, rank, callback){
   mongoClient.connect(url, function(err, db){
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     }
     else {
-      rateDocument(db, emailAddress, dNumber, rate, function(err, result){
+      rateDocument(db, emailAddress, dNumber, rank, function(err, result){
         db.close();
         if(err){
           callback(err, null);
