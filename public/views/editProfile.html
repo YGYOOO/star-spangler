@@ -21,24 +21,24 @@
   <input type="file" id="upload" style="display: none" />
   <div class="input-field">
     <i class="material-icons prefix">account_circle</i>
-    <input id="userName" type="text" class="validate">
+    <input id="userName" type="text">
     <label for="userName">User Name</label>
   </div>
   <div class="input-field">
     <i class="material-icons prefix">email</i>
-    <input id="emailAddress" type="text" class="validate">
+    <input id="emailAddress" type="text">
     <label for="emailAddress">Email Address</label>
   </div>
   <div class="name1">
     <div class="name2">
       <div class="input-field">
-        <input id="firstName" type="text" class="validate">
+        <input id="firstName" type="text">
         <label for="firstName">First Name</label>
       </div>
     </div>
     <div class="name2" style="margin-left:10px">
       <div class="input-field">
-        <input id="lastName" type="text" class="validate">
+        <input id="lastName" type="text">
         <label for="lastName">Last	Name</label>
       </div>
     </div>
@@ -46,17 +46,22 @@
   <div>
     <!-- <i class="material-icons prefix">phone</i> -->
     <div class="input-field">
-      <input type="text" class="validate">
+      <input type="text" >
       <label>Phone Number</label>
     </div>
     <p id="addPhone" class="hvr-grow" ng-click="addPhone()"><i class="fa fa-plus" style="font-size:25px;color:rgb(0,188,212)"></i></p>
   </div>
   <div>
-    <div class="input-field">
-      <input type="text" class="validate">
+    <!-- <div class="input-field">
+      <input id="favorites" type="text" class="validate">
       <label>Favorite Thing</label>
-    </div>
-    <p id="addFavorite" class="hvr-grow" ng-click="addFavorite()"><i class="fa fa-plus" style="font-size:25px;color:rgb(0,188,212)"></i></p>
+    </div> -->
+  <div class="input-field">
+    <input type="text" data-role="materialtags">
+    <label>Favorite Thing</label>
+  </div>
+    <!-- <p id="addFavorite" class="hvr-grow" ng-click="addFavorite()"><i class="fa fa-plus" style="font-size:25px;color:rgb(0,188,212)"></i></p> -->
   </div>
   <a class="btn waves-effect waves-light" style="margin-top:5px;margin-left:337px">Save&nbsp;&nbsp;<i class="fa fa-paper-plane" style="font-size:16px"></i></a>
 </div>
+<script src="javascripts/materialize-tags.min.js"></script>

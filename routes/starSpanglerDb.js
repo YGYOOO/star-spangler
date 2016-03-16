@@ -13,10 +13,10 @@ var createUser = function(db, emailAddress, password, callback){
                 userName: '',
                 emailAddress: emailAddress,
                 avatarImage: '',
-                favoriteThings:[]
+                favoriteThings:[],
+                phones: []
               },
     rankedDocuments: [],
-    phones: []
   },
   db.collection('user').insertOne(user, function(err, writeResult){
     if(writeResult.result.ok !== 1){
@@ -101,6 +101,26 @@ var rateDocument = function(db, e, dNumber, rank, callback){
         callback(null, result.result.nModified);
       }
     });
+}
+
+var updateProfile = function(db, emailAddress, profile, callback){
+  // db.collection('user').updateOne({emailAddress : e},
+  //   {
+  //     $set{
+  //           profile: {
+  //                       $set{
+  //                         firstName: profile.firstName,
+  //                         lastName: profile,
+  //                         userName: profile,
+  //                         emailAddress: emailAddress,
+  //                         avatarImage: '',
+  //                         favoriteThings:[]
+  //                         phones: []
+  //                       }
+  //                     },
+  //             }
+  //   }
+  // );
 }
 
 module.exports.userTypeUpdate = function(e, type, callback){
@@ -213,13 +233,21 @@ module.exports.documentRate = function(emailAddress, dNumber, rank, callback){
   });
 }
 
-module.exports.profileUpdate = function(emailAddress, data, callback){
+module.exports.profileUpdate = function(emailAddress, profile, callback){
   mongoClient.connect(url, function(err, db){
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     }
     else {
-
+      updateProfile(db, emailAddress, profile, function(err, result){
+        db.close();
+        if(err){
+          callback(err, null);
+        }
+        else{
+          callback(null, result);
+        }
+      });
     }
   });
 }
