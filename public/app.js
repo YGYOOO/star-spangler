@@ -18,6 +18,10 @@ app.config(['$routeProvider', function($routeProvider){
       templateUrl: 'views/viewDocuments.html',
       controller: 'viewDocumentsController'
     }).
+    when('/editProfile',{
+      templateUrl: 'views/editProfile.html',
+      controller: 'editProfileController'
+    }).
     otherwise({
       redirectTo: '/'
     });

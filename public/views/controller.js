@@ -1,15 +1,4 @@
-// $.bridget( 'masonry', masonry );
-
 var Document = angular.module('Document', ['ngRoute', 'ngResource']);
-
-// Document.factory('userRank', ['$resource',
-//     function($resource) {
-//       return $resource('/api/users/:emailAddress/rankedDocuments', null,
-//       {
-//         'update': { method:'PUT' }
-//       });
-//     }
-//   ]);
 
 Document.controller('documentsController', ['$scope', '$resource',
   function($scope, $resource){
@@ -145,7 +134,14 @@ function($scope, $resource, $location, $timeout){
           'update': { method:'PUT' }
       });
     var body = {dNumber: dNumber, rank: rank};
-    User.update({emailAddress: $scope.user.emailAddress}, body);
+    User.update({emailAddress: $scope.user.emailAddress}, body, function(result, headers){
+      if (result) {
+        // Materialize.toast('Success!', 3000);
+      }
+      else {
+        Materialize.toast('Failed!', 3000);
+      }
+  });
   }
 
   $scope.initRank = function(){
@@ -186,7 +182,6 @@ function($scope, $resource, $location, $timeout){
           starWidth: "22px",
 
         }).on("rateyo.set", function (event, data) {
-          alert('1');
           $scope.userRank($(event.target).attr('id').split('_')[1], data.rating);
         });
       },
@@ -199,3 +194,26 @@ function($scope, $resource, $location, $timeout){
     }
   };
 });
+
+Document.controller('editProfileController',['$scope', '$resource', '$location',
+  function($scope, $resource, $location){
+    $scope.getUser = function(){
+      $.ajax('/api/user',
+      {
+        type: 'GET',
+        success: function(u){ $scope.user1 = u;$scope.$apply()},
+        error: function(e){$location.path('/');$scope.$apply()}
+      });
+    };
+    $scope.changeAvatar = function(){
+      $("#upload").click();
+    };
+    $scope.addPhone = function(){
+      var content = '<div class="input-field"><input type="text" class="validate"><label>Phone Number</label></div>';
+      $('#addPhone').before(content);
+    };
+    $scope.addFavorite = function(){
+      var content = '<div class="input-field"><input type="text" class="validate"><label>Phone Number</label></div>';
+      $('#addFavorite').before(content);
+    }
+}]);

@@ -110,13 +110,66 @@ td{
   margin: 2px;
 }
 
-/*.stars{
-  padding-left: 350px;
-  position: relative;
-  top:15px;
-}*/
-
 .rateYo{
   margin:0 auto;
   margin-top:10px
+}
+
+.profile{
+  margin:0 auto !important;
+  margin-top: 40px !important;
+  width: 500px;
+  text-align: center;
+}
+
+#avatar{
+  width: 120px;
+  height: 120px;
+  margin: 0 auto;
+
+}
+#avatarImg{
+  border-radius:60px;
+}
+#avatarText{
+  position: absolute;
+  margin: 50px 10px;
+  color: white;
+  opacity: 0;
+}
+#avatarCover{
+  width: 120px;
+  height: 120px;
+  border-radius:60px;
+  float: left;
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 120px;
+  background-color: black;
+  color: white;
+  opacity: 0;
+}
+#avatarCover:hover{
+  opacity: 0.4;
+}
+#avatarCover:hover + #avatarText{
+  opacity: 0.9;
+}
+#avatarText:hover{
+  opacity: 0.9;
+}
+
+.name1{
+  height: 75px;
+}
+
+.name2{
+  width:225px;
+  float:left;
+}
+
+#addPhone,#addFavorite{
+  margin-top: 0px;
+  margin-bottom:0px
 }

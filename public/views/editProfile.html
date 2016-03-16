@@ -1,0 +1,62 @@
+<nav ng-init="getUser()">
+  <div class="nav-wrapper teal lighten-2">
+    <a href="#" class="brand-logo center ">Star Spangler</a>
+    <ul id="nav-mobile" class="left hide-on-med-and-down">
+      <li><a href="/#/viewDocuments">View Documents</a></li>
+      <li><a href="/#/editProfile">Edit Profile</a></li>
+    </ul>
+    <ul id="nav-mobile" ng-switch on="user.userName || 'undefined'" class="right hide-on-med-and-down">
+      <li ng-switch-when="undefined"><a href="/#/">{{user.emailAddress}}</a></li>
+      <li ng-switch-default><a href="/#/">{{user.userName}}</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="profile card-panel">
+  <div id="avatar">
+    <div id="avatarCover" ng-click="changeAvatar()"></div>
+    <p id="avatarText" ng-click="changeAvatar()"> Change Avatar</p>
+    <img id="avatarImg" width="120" height="120" src="http://materializecss.com/images/sample-1.jpg">
+  </div>
+  <input type="file" id="upload" style="display: none" />
+  <div class="input-field">
+    <i class="material-icons prefix">account_circle</i>
+    <input id="userName" type="text" class="validate">
+    <label for="userName">User Name</label>
+  </div>
+  <div class="input-field">
+    <i class="material-icons prefix">email</i>
+    <input id="emailAddress" type="text" class="validate">
+    <label for="emailAddress">Email Address</label>
+  </div>
+  <div class="name1">
+    <div class="name2">
+      <div class="input-field">
+        <input id="firstName" type="text" class="validate">
+        <label for="firstName">First Name</label>
+      </div>
+    </div>
+    <div class="name2" style="margin-left:10px">
+      <div class="input-field">
+        <input id="lastName" type="text" class="validate">
+        <label for="lastName">Last	Name</label>
+      </div>
+    </div>
+  </div>
+  <div>
+    <!-- <i class="material-icons prefix">phone</i> -->
+    <div class="input-field">
+      <input type="text" class="validate">
+      <label>Phone Number</label>
+    </div>
+    <p id="addPhone" class="hvr-grow" ng-click="addPhone()"><i class="fa fa-plus" style="font-size:25px;color:rgb(0,188,212)"></i></p>
+  </div>
+  <div>
+    <div class="input-field">
+      <input type="text" class="validate">
+      <label>Favorite Thing</label>
+    </div>
+    <p id="addFavorite" class="hvr-grow" ng-click="addFavorite()"><i class="fa fa-plus" style="font-size:25px;color:rgb(0,188,212)"></i></p>
+  </div>
+  <a class="btn waves-effect waves-light" style="margin-top:5px;margin-left:337px">Save&nbsp;&nbsp;<i class="fa fa-paper-plane" style="font-size:16px"></i></a>
+</div>

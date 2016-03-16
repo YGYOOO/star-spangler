@@ -15,7 +15,8 @@ var createUser = function(db, emailAddress, password, callback){
                 avatarImage: '',
                 favoriteThings:[]
               },
-    rankedDocuments: []
+    rankedDocuments: [],
+    phones: []
   },
   db.collection('user').insertOne(user, function(err, writeResult){
     if(writeResult.result.ok !== 1){
@@ -208,6 +209,17 @@ module.exports.documentRate = function(emailAddress, dNumber, rank, callback){
           callback(null, result);
         }
       });
+    }
+  });
+}
+
+module.exports.profileUpdate = function(emailAddress, data, callback){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+
     }
   });
 }

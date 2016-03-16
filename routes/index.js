@@ -160,8 +160,14 @@ router.get('/api/documents/:emailAddress', function(req, res, next){
 router.put('/api/users/:emailAddress/rankedDocuments', function(req, res, next){
   star.documentRate(req.params.emailAddress, req.body.dNumber, req.body.rank, function(err, result){
     if (result) {
-      res.send(result);
+      res.send(true);
     }
+  });
+});
+
+router.put('api/users/:emailAddress/profile', function(req, res, next){
+  star.profileUpdate(req.params.emailAddress, req.body, function(err, result){
+    
   });
 });
 
