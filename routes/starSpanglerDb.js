@@ -37,7 +37,7 @@ var findOneUser = function(db, emailAddress, callback){
     else{
       callback(null, null);
     }
-  })
+  });
 }
 
 var findUsers = function(db, callback){
@@ -91,7 +91,8 @@ var rateDocument = function(db, e, dNumber, rank, callback){
     { $pull: {rankedDocuments:{documentNumber: dNumber}}},
     function(err, result){}
   );
-  db.collection('user').updateOne({emailAddress: e}, { $addToSet:{rankedDocuments: {documentNumber: dNumber, rank: rank}}},
+  db.collection('user').updateOne({emailAddress: e},
+    { $addToSet:{rankedDocuments: {documentNumber: dNumber, rank: rank}}},
     function(err, result){
       if (result.result.nModified > 0) {
         callback(null, result.result.nModified);
@@ -104,24 +105,44 @@ var rateDocument = function(db, e, dNumber, rank, callback){
 }
 
 var updateProfile = function(db, emailAddress, profile, callback){
-  // db.collection('user').updateOne({emailAddress : e},
-  //   {
-  //     $set{
-  //           profile: {
-  //                       $set{
-  //                         firstName: profile.firstName,
-  //                         lastName: profile,
-  //                         userName: profile,
-  //                         emailAddress: emailAddress,
-  //                         avatarImage: '',
-  //                         favoriteThings:[]
-  //                         phones: []
-  //                       }
-  //                     },
-  //             }
-  //   }
-  // );
-}
+  var avatar = '';
+  db.collection('user').findOne({emailAddress: emailAddress}, function(err, thing){
+    if(thing){
+      avatar = thing.profile.avatarImage;
+      db.collection('user').updateOne({emailAddress : emailAddress},
+        {
+          $set:{
+                profile: {
+                              firstName: profile.firstName,
+                              lastName: profile.lastName,
+                              userName: profile.userName,
+                              emailAddress: emailAddress,
+                              favoriteThings: profile.favoriteThings,
+                              phones: profile.phones,
+                              avatarImage: avatar,
+                          },
+                  }
+        },
+        function(err, result){
+          console.log(result.result.nModified);
+        }
+      );
+    }
+    else{
+      callback(null, null);
+    }
+  });
+};
+
+var avatarSave = function(db, emailAddress, avatar, callback){
+  db.collection('user').updateOne(
+    {emailAddress : emailAddress},
+    {$set: {avatarImage: avatar}},
+    function(err, result){
+      console.log(result.result.nModified);
+    }
+  );
+};
 
 module.exports.userTypeUpdate = function(e, type, callback){
   mongoClient.connect(url, function(err, db){
@@ -247,6 +268,24 @@ module.exports.profileUpdate = function(emailAddress, profile, callback){
         else{
           callback(null, result);
         }
+      });
+    }
+  });
+};
+
+module.exports.avatarUpdate = function(emailAddress, avatar, callback){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      avatarSave( db, emailAddress, avatar, function( err, result ) {
+         db.close();
+         if( err ) {
+            callback( err, null );
+         } else {
+            callback(null, result );
+         }
       });
     }
   });

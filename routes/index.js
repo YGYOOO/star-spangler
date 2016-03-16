@@ -3,10 +3,9 @@ var router = express.Router();
 var http = require('http');
 var https = require('https');
 var star = require('./starSpanglerDb.js');
-
-// router.get('/', function(req, res, next) {
-//    res.sendFile( 'index.html', { root : __dirname + "/../public" } );
-// });
+var PHOTO_DIRECTORY = __dirname + '/../public/avatars';
+var multer  = require('multer')({dest: PHOTO_DIRECTORY});
+var fs = require('fs');
 
 
 var remoteGet = function(options, callback){
@@ -158,6 +157,7 @@ router.get('/api/documents/:emailAddress', function(req, res, next){
 });
 
 router.put('/api/users/:emailAddress/rankedDocuments', function(req, res, next){
+console.log('2323');
   star.documentRate(req.params.emailAddress, req.body.dNumber, req.body.rank, function(err, result){
     if (result) {
       res.send(true);
@@ -165,9 +165,21 @@ router.put('/api/users/:emailAddress/rankedDocuments', function(req, res, next){
   });
 });
 
-router.put('api/users/:emailAddress/profile', function(req, res, next){
+router.put('/api/users/:emailAddress/profile', function(req, res, next){
   star.profileUpdate(req.params.emailAddress, req.body, function(err, result){
-    
+
+  });
+});
+
+router.post('/api/users/:emailAddress/avatar', multer.single('avatar'), function(req, res, next){
+  var avatar = {
+    tags : JSON.parse( req.body.tags ),
+    imageId : req.file.filename
+  };
+  star.avatarUpdate(req.params.emailAddress, req.file.filename, function(err, avatar){
+    if(avatar){
+      res.send(avatar);
+    }
   });
 });
 

@@ -169,7 +169,7 @@ td{
   float:left;
 }
 
-#addPhone,#addFavorite{
-  margin-top: 0px;
+#addPhone{
+  margin-top: -50px;
   margin-bottom:0px
 }

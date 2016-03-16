@@ -197,23 +197,63 @@ function($scope, $resource, $location, $timeout){
 
 Document.controller('editProfileController',['$scope', '$resource', '$location',
   function($scope, $resource, $location){
+    $("#uploadPhoto").change(function(){
+      $scope.saveAvatar();
+    });
     $scope.getUser = function(){
       $.ajax('/api/user',
       {
         type: 'GET',
-        success: function(u){ $scope.user1 = u;$scope.$apply()},
+        success: function(u){ $scope.user = u;$scope.$apply();
+        $('#favoriteThings').materialtags('add', u.profile.favoriteThings.toString());
+        },
         error: function(e){$location.path('/');$scope.$apply()}
       });
     };
     $scope.changeAvatar = function(){
-      $("#upload").click();
+      $("#uploadPhoto").click();
     };
+    $scope.saveAvatar = function(){
+      var formData = new FormData();
+      if(!$('#uploadPhoto').val()) return;
+      formData.append('tags', '[]');
+      formData.append('avatar', $('#uploadPhoto')[0].files[0]);
+
+      $.ajax({
+        url: '/api/users/' + $scope.user.emailAddress + '/avatar',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(result){
+
+        }
+      });
+    }
     $scope.addPhone = function(){
-      var content = '<div class="input-field"><input type="text" class="validate"><label>Phone Number</label></div>';
+      var content = '<div class="input-field"><input type="text" class="phones"><label>Phone Number</label></div>';
       $('#addPhone').before(content);
     };
-    $scope.addFavorite = function(){
-      var content = '<div class="input-field"><input type="text" class="validate"><label>Phone Number</label></div>';
-      $('#addFavorite').before(content);
-    }
+    $scope.updateProfile = function(){
+      var User = $resource('/api/users/:emailAddress/profile', null,
+        {
+            'update': { method:'PUT' }
+        });
+      var phones = [];
+
+      $(".phones").each(function(){
+        phones.push($(this).val());
+      });
+      var favoriteThings = $("#favoriteThings").val().split(',');
+      var body = {
+        userName: $("#userName").val(),
+        firstName: $("#firstName").val(),
+        lastName: $("#lastName").val(),
+        phones: phones,
+        favoriteThings: favoriteThings,
+      };
+      User.update({emailAddress: $scope.user.emailAddress} ,body, function(){
+
+      });
+    };
 }]);
