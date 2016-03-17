@@ -183,3 +183,12 @@ td{
 .phone1{
   margin-bottom: 7px !important;
 }
+
+#selectType{
+  z-index: 901;
+  position: absolute !important;
+  top:20px;
+  right:85px;
+  width: 200px !important;
+  opacity: 0;
+}

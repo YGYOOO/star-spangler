@@ -101,9 +101,12 @@ router.put('/api/users/:emailAddress/type', function(req, res, next){
   });
 });
 
-router.get('/api/documents', function(req, res, next){
+router.get('/api/documents/:url', function(req, res, next){
   var host = 'www.federalregister.gov';
-  var path = '/api/v1/articles?order=relevance'
+  // var path = '/api/v1/articles?order=relevance&page=' + req.query.page +
+  // '&conditions[term]=' + (req.query.term || '') + '&conditions[type]=' +(req.query.type || '');
+  var path = '/api/v1/articles?' + req.params.url;
+  console.log(path);
   var options = {
     host: host,
     path: path,
@@ -115,6 +118,7 @@ router.get('/api/documents', function(req, res, next){
   });
 });
 
+
 router.post('/api/documents', function(req, res, next){
   star.documentsCreate(req.body.usersList, req.body.documentsList, function(err, results){
     if(err){
@@ -122,6 +126,17 @@ router.post('/api/documents', function(req, res, next){
     }
     else {
       res.send(true);
+    }
+  });
+});
+
+router.get('/api/documents', function(req, res, next){
+  star.documentsListFind(function(err, results){
+    if(err){
+      res.send(err);
+    }
+    else {
+      res.send(results);
     }
   });
 });
@@ -185,6 +200,6 @@ router.post('/api/users/:emailAddress/avatar', multer.single('avatar'), function
 
 router.get('/api/avatar/:id', function( req, res, next ) {
    res.sendFile( req.params.id, { root : PHOTO_DIRECTORY } );
-} );
+});
 
 module.exports = router;

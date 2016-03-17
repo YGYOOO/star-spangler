@@ -82,6 +82,17 @@ var createDocuments = function(db, usersList, documentsList, callback){
   });
 }
 
+var findDocumentsList = function(db, callback){
+  db.collection('document').find().toArray(function(err, results){
+    if(err){
+      callback(err, null);
+    }
+    else {
+      callback(null, results);
+    }
+  });
+}
+
 var findDocuments = function(db, emailAddress, callback){
   var text = ".*gu.*";
   var documents = '';
@@ -227,6 +238,24 @@ module.exports.documentsCreate = function(usersList, documentsList, callback){
     }
     else {
       createDocuments(db, usersList, documentsList, function(err, result){
+        db.close();
+        if(err){
+          callback(err, null);
+        }
+        else {
+         callback(null, result);
+        }
+      });
+    }
+  });
+}
+module.exports.documentsListFind = function(callback){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      findDocumentsList(db, function(err, result){
         db.close();
         if(err){
           callback(err, null);

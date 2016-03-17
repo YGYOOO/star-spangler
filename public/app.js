@@ -10,6 +10,10 @@ app.config(['$routeProvider', function($routeProvider){
       templateUrl: 'views/manageUsers.html',
       controller: 'manageUsersController'
     }).
+    when('/viewDocumentsAdmin',{
+      templateUrl: 'views/viewDocumentsAdmin.html',
+      controller: 'viewDocumentsAdminController'
+    }).
     when('/manageDocuments',{
       templateUrl: 'views/manageDocuments.html',
       controller: 'manageDocumentsController'

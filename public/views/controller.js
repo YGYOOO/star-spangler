@@ -62,8 +62,8 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
 
 }]);
 
-Document.controller('manageDocumentsController', ['$scope', '$resource',
-  function($scope, $resource){
+Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$http',
+  function($scope, $resource, $http){
     $scope.getUser = function(){
       $.ajax('/api/user',
       {
@@ -72,25 +72,65 @@ Document.controller('manageDocumentsController', ['$scope', '$resource',
         error: function(e){$location.path('/');$scope.$apply()}
       });
     };
-    var Articles = $resource('/api/documents');
+    var Articles = $resource('/api/documents/order=relevance&page=1&conditions[term]=&conditions[type]=');
     $scope.articles = Articles.get();
 
     $scope.addToList = function(number){
       document.getElementById("selectedPanel").classList.add('floatOut');
       document.getElementById("selectedPanel").classList.remove('floatIn');
       var exist = false;
-      // var documents = global.getDocuments()
       for(var i=0; i<documentsList.length; i++){
         if(documentsList[i] === number)
             exist = true;
       }
       if(!exist){
-        // global.setDocuments(number);
         documentsList.push(number);
         var child = '<div class="chip documentChip" id="tag' + number + '">' + number + '<i class="material-icons">close</i></div>'
         $('#selectedDocuments').append(child);
       }
-    }
+    };
+
+    $scope.getDocuments = function(term, type){
+      var Document = $resource('/api/documents/order=relevance&page=1&conditions[term]=' + term +
+      '&conditions[type]=' + type);
+      $scope.articles = Document.get();
+    };
+
+    $scope.getMore = function(url){
+      var more = $resource('/api/documents/' + url);
+      var moreDocuments = more.get(
+        function(){
+          $scope.articles.results = $scope.articles.results.concat(moreDocuments.results);
+          $scope.articles.next_page_url = moreDocuments.next_page_url;
+        });
+    };
+
+    $(window).scroll(function(){
+      if($(window).scrollTop() + $(window).height() > $(document).height() - 50){
+        $scope.getMore($scope.articles.next_page_url.split('?')[1]);
+      }
+    });
+
+    $('#search').on('click', function(e){
+      $('#selectType').animate({top:'60px',opacity:'1'});
+    });
+
+    $('#search').on('keypress', function(e){
+      if(e.which === 13){
+        $scope.getDocuments($('#search').val(), $('#typeSelector').val());
+      }
+    });
+
+    $('#selectType').change(function(){
+      $scope.getDocuments($('#search').val(), $('#typeSelector').val());
+    });
+
+    $(document).on('click', function(e){
+      var target = e.target;
+      if(!$(target).is('#selectType') && !$(target).is('#search')){
+        $('#selectType').animate({top:'20px',opacity:'0'});
+      }
+    });
   }]);
 
 Document.controller('loginController', ['$scope', '$resource', '$location',
