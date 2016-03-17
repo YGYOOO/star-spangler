@@ -18,12 +18,19 @@ var createUser = function(db, emailAddress, password, callback){
               },
     rankedDocuments: [],
   },
-  db.collection('user').insertOne(user, function(err, writeResult){
-    if(writeResult.result.ok !== 1){
-      callback(err, null);
+  db.collection('user').findOne({emailAddress: emailAddress}, function(err, thing){
+    if(!thing){
+      db.collection('user').insertOne(user, function(err, writeResult){
+        if(writeResult.result.ok !== 1){
+          callback(err, null);
+        }
+        else{
+          callback(null, writeResult);
+        }
+      });
     }
-    else{
-      callback(null, writeResult);
+    else {
+      callback(null, null);
     }
   });
 }
@@ -106,40 +113,56 @@ var rateDocument = function(db, e, dNumber, rank, callback){
 
 var updateProfile = function(db, emailAddress, profile, callback){
   var avatar = '';
-  db.collection('user').findOne({emailAddress: emailAddress}, function(err, thing){
-    if(thing){
-      avatar = thing.profile.avatarImage;
-      db.collection('user').updateOne({emailAddress : emailAddress},
-        {
-          $set:{
-                profile: {
-                              firstName: profile.firstName,
-                              lastName: profile.lastName,
-                              userName: profile.userName,
-                              emailAddress: emailAddress,
-                              favoriteThings: profile.favoriteThings,
-                              phones: profile.phones,
-                              avatarImage: avatar,
-                          },
-                  }
-        },
-        function(err, result){
-          console.log(result.result.nModified);
-        }
-      );
-    }
-    else{
-      callback(null, null);
-    }
-  });
+  db.collection('user').findOne({emailAddress: profile.emailAddress}, function(err, thing){
+    console.log("find user: " + thing);
+  if(!thing || profile.emailAddress === emailAddress){
+    db.collection('user').findOne({emailAddress: emailAddress}, function(err, thing){
+      if(thing){
+        avatar = thing.profile.avatarImage;
+        db.collection('user').updateOne({emailAddress : emailAddress},
+          {
+            $set:{
+                  emailAddress: profile.emailAddress,
+                  profile: {
+                                firstName: profile.firstName,
+                                lastName: profile.lastName,
+                                userName: profile.userName,
+                                emailAddress: profile.emailAddress,
+                                favoriteThings: profile.favoriteThings,
+                                phones: profile.phones,
+                                avatarImage: avatar,
+                            },
+                    }
+          },
+          function(err, result){
+            if(!err){
+              callback(null, 1);//success
+            }
+          }
+        );
+      }
+      else{
+        callback(null, 0);//Failed
+      }
+    });
+  }
+  else{
+      callback(null, 2);//Email already exists
+  }});
 };
 
 var avatarSave = function(db, emailAddress, avatar, callback){
   db.collection('user').updateOne(
     {emailAddress : emailAddress},
-    {$set: {avatarImage: avatar}},
+    {$set: {"profile.avatarImage": avatar}},
     function(err, result){
-      console.log(result.result.nModified);
+      if(err){
+
+      }
+      else {
+        console.log(result.result.nModified);
+
+      }
     }
   );
 };

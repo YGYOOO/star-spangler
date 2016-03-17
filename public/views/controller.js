@@ -231,9 +231,16 @@ Document.controller('editProfileController',['$scope', '$resource', '$location',
       });
     }
     $scope.addPhone = function(){
-      var content = '<div class="input-field"><input type="text" class="phones"><label>Phone Number</label></div>';
+      var content = '<div class="row">'+
+          '  <div class="input-field col s12">'+
+'              <input type="text" class="phones"">'+
+'              <label>Phone Number</label>'+
+            '  <p class="deletePhone"><i class="fa fa-times delete"></i></p>'+
+'            </div>'+
+          '</div>';
       $('#addPhone').before(content);
     };
+
     $scope.updateProfile = function(){
       var User = $resource('/api/users/:emailAddress/profile', null,
         {
@@ -246,14 +253,24 @@ Document.controller('editProfileController',['$scope', '$resource', '$location',
       });
       var favoriteThings = $("#favoriteThings").val().split(',');
       var body = {
+        emailAddress: $("#emailAddress").val(),
         userName: $("#userName").val(),
         firstName: $("#firstName").val(),
         lastName: $("#lastName").val(),
         phones: phones,
         favoriteThings: favoriteThings,
       };
-      User.update({emailAddress: $scope.user.emailAddress} ,body, function(){
-
+      User.update({emailAddress: $scope.user.emailAddress} ,body, function(result, headers){
+        console.log(result[0]);
+        if(result[0] === '1'){
+          Materialize.toast('Success!', 3000);
+        }
+        else if (result[0] === '2') {
+          Materialize.toast('The email is already registered by others', 3000);
+        }
+        else{
+          Materialize.toast('Oops..Failed to update your profile', 3000);
+        }
       });
     };
 }]);

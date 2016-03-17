@@ -167,7 +167,7 @@ console.log('2323');
 
 router.put('/api/users/:emailAddress/profile', function(req, res, next){
   star.profileUpdate(req.params.emailAddress, req.body, function(err, result){
-
+    res.send(result.toString());
   });
 });
 
@@ -182,5 +182,9 @@ router.post('/api/users/:emailAddress/avatar', multer.single('avatar'), function
     }
   });
 });
+
+router.get('/api/avatar/:id', function( req, res, next ) {
+   res.sendFile( req.params.id, { root : PHOTO_DIRECTORY } );
+} );
 
 module.exports = router;

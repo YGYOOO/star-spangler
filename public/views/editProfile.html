@@ -18,7 +18,7 @@
   <div id="avatar">
     <div id="avatarCover" ng-click="changeAvatar()"></div>
     <p id="avatarText" ng-click="changeAvatar()"> Change Avatar</p>
-    <img id="avatarImg" width="120" height="120" src="http://materializecss.com/images/sample-1.jpg">
+    <img id="avatarImg" width="120" height="120" ng-src="/api/avatar/{{user.profile.avatarImage}}">
   </div>
   <input type="file" id="uploadPhoto" style="display: none" />
   <div class="row">
@@ -35,7 +35,7 @@
       <label for="emailAddress">Email Address</label>
     </div>
   </div>
-  <div class="name1">
+  <div class="name1" >
     <div class="name2 row">
       <div class="input-field col s12">
         <input id="firstName" type="text" value="{{user.profile.firstName}}">
@@ -49,15 +49,16 @@
       </div>
     </div>
   </div>
-  <div ng-repeat="phone in user.profile.phones">
-    <div class="row">
+
+    <div class="row phone1" ng-repeat="phone in user.profile.phones">
       <div class="input-field col s12">
         <input type="text" class="phones" value="{{phone}}">
         <label>Phone Number</label>
+        <p class="deletePhone"><i class="fa fa-times delete" style="font-size:15px;"></i></p>
       </div>
     </div>
-  </div>
-  <p id="addPhone" class="hvr-grow" ng-click="addPhone()"><i class="fa fa-plus" style="font-size:25px;color:rgb(0,188,212)"></i></p>
+
+  <p id="addPhone" class="hvr-grow" ng-click="addPhone()" style="margin-top:-65px"><i class="fa fa-plus" style="font-size:15px;"></i></p>
   <div class="row">
     <div class="input-field col s12">
       <input type="text" data-role="materialtags" id="favoriteThings">
@@ -72,5 +73,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js"></script>
 <script src="javascripts/materialize-tags.min.js"></script>
 <script type="text/javascript">
-  $("#userName").click();
+  $( ".profile" ).on( "click", ".deletePhone",function() {
+    var a = $(this).parent().parent().remove();
+    console.log(a);
+  });
 </script>
