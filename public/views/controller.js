@@ -11,7 +11,6 @@ Document.controller('documentsController', ['$scope', '$resource',
 Document.controller('manageUsersController', ['$scope', '$resource', '$location',
   function($scope, $resource, $location){
     var Users = $resource('/api/users');
-    var useUpdate = $resource
     $scope.users = Users.query();
 
     var User = $resource('/api/users/:emailAddress/type', null,
@@ -44,19 +43,33 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
     }
 
     $scope.addToList = function(email){
-      document.getElementById("selectedPanel").classList.add('floatOut');
-      document.getElementById("selectedPanel").classList.remove('floatIn');
-      var exist = false;
-      // var users = global.getUsers();
-      for(var i=0; i<usersList.length; i++){
-        if(usersList[i] === email)
-          exist = true;
+      if($('#listPanel').attr('class').indexOf('floatOut') > 0){
+        var exist = false;
+        for(var i=0; i<usersList.length; i++){
+          if(usersList[i] === email)
+              exist = true;
+        }
+        if(!exist){
+          usersList.push(email);
+          var child = '<div class="chip documentChip" id="tag' + email + '">' + email + '<i class="material-icons">close</i></div>'
+          $('#list').append(child);
+        }
       }
-      if(!exist){
-        // global.setUsers(global.setUsers(email));
-        usersList.push(email);
-        var child = '<div class="chip userChip" id="tag' + email + '">' + email + '<i class="material-icons">close</i></div>'
-        $('#selectedUsers').append(child);
+      else{
+        $("#selectedPanel").addClass('floatOut');
+        $("#selectedPanel").removeClass('floatIn');
+        var exist = false;
+        // var users = global.getUsers();
+        for(var i=0; i<usersList.length; i++){
+          if(usersList[i] === email)
+            exist = true;
+        }
+        if(!exist){
+          // global.setUsers(global.setUsers(email));
+          usersList.push(email);
+          var child = '<div class="chip userChip" id="tag' + email + '">' + email + '<i class="material-icons">close</i></div>'
+          $('#selectedUsers').append(child);
+        }
       }
     }
 
@@ -76,17 +89,31 @@ Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$ht
     $scope.articles = Articles.get();
 
     $scope.addToList = function(number){
-      document.getElementById("selectedPanel").classList.add('floatOut');
-      document.getElementById("selectedPanel").classList.remove('floatIn');
-      var exist = false;
-      for(var i=0; i<documentsList.length; i++){
-        if(documentsList[i] === number)
-            exist = true;
+      if($('#listPanel').attr('class').indexOf('floatOut') > 0){
+        var exist = false;
+        for(var i=0; i<documentsList.length; i++){
+          if(documentsList[i] === number)
+              exist = true;
+        }
+        if(!exist){
+          documentsList.push(number);
+          var child = '<div class="chip documentChip" id="tag' + number + '">' + number + '<i class="material-icons">close</i></div>'
+          $('#list').append(child);
+        }
       }
-      if(!exist){
-        documentsList.push(number);
-        var child = '<div class="chip documentChip" id="tag' + number + '">' + number + '<i class="material-icons">close</i></div>'
-        $('#selectedDocuments').append(child);
+      else{
+        $("#selectedPanel").addClass('floatOut');
+        $("#selectedPanel").removeClass('floatIn');
+        var exist = false;
+        for(var i=0; i<documentsList.length; i++){
+          if(documentsList[i] === number)
+              exist = true;
+        }
+        if(!exist){
+          documentsList.push(number);
+          var child = '<div class="chip documentChip" id="tag' + number + '">' + number + '<i class="material-icons">close</i></div>'
+          $('#selectedDocuments').append(child);
+        }
       }
     };
 
@@ -133,6 +160,34 @@ Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$ht
     });
   }]);
 
+Document.controller('manageDocumentsController', ['$scope', '$resource', '$location',
+  function($scope, $resource, $location){
+    var list = $resource('/api/documents');
+    list.query(function(result){
+      $scope.lists = result;
+      $.each(result, function(index, value){
+        $scope.lists[index].documentsList = value.documentsList.split(',');
+        $scope.lists[index].documentsList = $scope.lists[index].documentsList.filter(String);
+        $scope.lists[index].usersList = value.usersList.split(',');
+        $scope.lists[index].usersList = $scope.lists[index].usersList.filter(String);
+      });
+    });
+    $scope.getUser = function(){
+      $.ajax('/api/user',
+      {
+        type: 'GET',
+        success: function(u){ $scope.user = u;$scope.$apply()},
+        error: function(e){$location.path('/');$scope.$apply()}
+      });
+    };
+    $scope.addMore = function(id){
+      editThingId = id;
+      $("#listPanel").addClass('floatOut');
+      $("#listPanel").removeClass('floatIn');
+    }
+
+  }
+]);
 Document.controller('loginController', ['$scope', '$resource', '$location',
   function($scope, $resource, $location){
     var login = $resource('/api/login');

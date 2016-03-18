@@ -7,50 +7,43 @@
       <li><a href="/#/manageDocuments">Manage Documents</a></li>
     </ul>
     <ul id="nav-mobile" ng-switch on="user.profile.userName || 'undefined'" class="right hide-on-med-and-down">
-      <li>
-        <form class=" teal lighten-3">
-          <div class="input-field">
-            <input id="search" type="search"/>
-            <label for="search"><i class="mdi-action-search"></i></label><i class="mdi-navigation-close close"></i>
-          </div>
-        </form>
-      </li>
       <li ng-switch-when="undefined"><a href="/#/">{{user.emailAddress}}</a></li>
       <li ng-switch-default><a href="/#/">{{user.profile.userName}}</a></li>
     </ul>
   </div>
 </nav>
-<div class="input-field" id="selectType">
-  <select id="typeSelector">
-    <option value="" disabled selected>Choose type of document</option>
-    <option value="NOTICE">Notice</option>
-    <option value="RULE">Final Rule</option>
-    <option value="PRESDOCU">Presidential Document</option>
-    <option value="PRORULE">Proposed Rule</option>
-  </select>
+
+<div id="manageDocumentsList" class="card-panel">
+  <table class="bordered">
+    <thead>
+      <tr>
+        <th width="44%">Documents List</th>
+        <th width="44%">Users List</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="list in lists">
+        <td>
+          <div class="floatLeft" ng-click="addMore('d-'+list._id)">
+            <i class="material-icons">add</i>
+          </div>
+          <div id="d-{{list._id}}" class="floatLeft" style="width:280px">
+            <div class="chip" ng-repeat="documentsList in list.documentsList">{{documentsList}}<i class="material-icons">close</i></div>
+          </div>
+        </td>
+        <td>
+          <div class="floatLeft" ng-click="addMore('u-'+list._id)">
+            <i class="material-icons">add</i>
+          </div>
+          <div id="u-{{list._id}}" class="floatLeft" style="width:280px">
+            <div class="chip" ng-repeat="usersList in list.usersList">{{usersList}}<i class="material-icons">close</i></div>
+          </div>
+        </td>
+        <td>
+          <a class="btn-floating waves-effect waves-light"><i class="fa fa-times"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
-<div class="document">
-  <ul class="collapsible" data-collapsible="accordion">
-    <li ng-repeat="article in articles.results">
-      <div class="grey lighten-5 documentNumber" >
-        <i class="tiny material-icons" >label_outline</i>{{article.document_number}}
-        <i class="material-icons" style="float:right; margin-top:-3px" ng-click="addToList(article.document_number)">add</i>
-      </div>
-      <div class="collapsible-header">{{article.title}}
-      </div>
-      <div class="collapsible-body">
-        <p align="left" style="padding-bottom:10px">&nbsp;&nbsp;&nbsp;&nbsp;{{article.abstract}}</p>
-        <a href="{{article.html_url}}" class="" style="margin-bottom:10px">Details</a><br>&nbsp;
-      </div>
-    </li>
-  </ul>
-</div>
-<br>
-<script type="text/javascript">
-  $(document).ready(function(){
-    $('.collapsible').collapsible({
-      accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
-    });
-    $('select').material_select();
-  });
-</script>

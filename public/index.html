@@ -6,6 +6,7 @@
       var usersList = [];
       var documentsList = [];
       var user = {};
+      var editThingId = '';
     </script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/style.css">
@@ -27,6 +28,12 @@
         <a class="btn-floating waves-effect waves-light" onclick="createDocuments()"><i class="fa fa-check"></i></a>
         <a class="btn-floating waves-effect waves-light" onclick="closePanel()"><i class="fa fa-times"></i></a>
       </div>
+    </div>
+    <div id="listPanel" class="card-panel selectedPanel">
+      <div id="list">
+      </div>
+      <a class="btn-floating waves-effect waves-light" onclick="addMoreDone()"><i class="fa fa-check"></i></a>
+      <a class="btn-floating waves-effect waves-light" onclick="closePanel2()"><i class="fa fa-times"></i></a>
     </div>
     <div class="container" ng-view></div>
     <script src="https://code.jquery.com/jquery-2.2.0.js"></script>

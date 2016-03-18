@@ -64,3 +64,43 @@ var closePanel = function(){
   $("#selectedPanel").removeClass('floatOut');
   setTimeout(function(){$("#selectedDocuments").empty();$("#selectedUsers").empty();}, 1500);
 }
+
+var addMoreDone = function(){
+  // alert(editThingId);
+  // $('.documentChip').each(function(){
+  //   documentsL = documentsL + $( this ).text().split('close')[0] + ',';
+  // });
+  // console.log($('#'+editThingId).children());
+  // console.log($('.documentChip'));
+  usersList = [];
+  documentsList = [];
+  $("#listPanel").addClass('floatIn');
+  $("#listPanel").removeClass('floatOut');
+  $('.documentChip').each(function(){
+    var thingToAdd = $(this).text().split('close')[0];
+    var alreadyExists = false;
+    $('#'+editThingId).children().each(function(){
+      if($(this).text().split('close')[0] === thingToAdd){
+        alreadyExists = true;
+      }
+    });
+    if(!alreadyExists){
+      console.log(thingToAdd);
+      var child = '<div class="chip">' + thingToAdd + '<i class="material-icons">close</i></div>'
+      $('#' + editThingId).append(child);
+    }
+  });
+  setTimeout(function(){$("#list").empty()}, 1500);
+}
+
+var closePanel2 = function(){
+  usersList = [];
+  documentsList = [];
+  $("#listPanel").addClass('floatIn');
+  $("#listPanel").removeClass('floatOut');
+  setTimeout(function(){$("#list").empty()}, 1500);
+}
+//
+// var showDocumentsPanel = function(){
+//   $('#documentsPanel').animate({left:'0px'}, 1000 ,"swing");
+// }

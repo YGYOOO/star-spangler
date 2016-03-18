@@ -65,7 +65,7 @@ td{
 
 .selectedPanel{
   z-index:900;
-  position: absolute;;
+  position: fixed;
   width: 308px;
   top:100px;
   left:-310px;
@@ -191,4 +191,14 @@ td{
   right:85px;
   width: 200px !important;
   opacity: 0;
+}
+
+#manageDocumentsList {
+  position:relative;
+  top:40px;
+  width: 800px;
+  margin: 0 auto;
+}
+.floatLeft{
+  float:left !important;
 }
