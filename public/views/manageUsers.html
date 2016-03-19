@@ -3,12 +3,19 @@
     <a href="#" class="brand-logo center ">Star Spangler</a>
     <ul id="nav-mobile" class="left hide-on-med-and-down">
       <li><a href="/#/manageUsers">Manage Users</a></li>
-      <li><a href="/#/viewDocumentsAdmin">View Documents</a></li>
       <li><a href="/#/manageDocuments">Manage Documents</a></li>
+      <li><a href="/#/manageLists">Manage Lists</a></li>
+      <li><a href="/#/editProfile">Profile</a></li>
     </ul>
-    <ul id="nav-mobile" ng-switch on="user.profile.userName || 'undefined'" class="right hide-on-med-and-down">
-      <li ng-switch-when="undefined"><a href="/#/">{{user.emailAddress}}</a></li>
-      <li ng-switch-default><a href="/#/">{{user.profile.userName}}</a></li>
+    <ul id="nav-mobile" onclick="logout()" ng-switch on="user.profile.avatarImage || 'undefined'" class="right hide-on-med-and-down">
+      <li ng-switch-default>
+        <div class="navAvatarCover"><p class="navAvatarText">logout</p></div>
+        <img class="navAvatar" width="50" height="50" ng-src="/api/avatar/{{user.profile.avatarImage}}">
+      </li>
+      <li ng-switch-when="undefined" ng-switch on="user.profile.userName || 'undefined'">
+        <a ng-switch-default>{{user.profile.userName}}</a>
+        <a ng-switch-when="undefined">{{user.emailAddress}}</a>
+      </li>
     </ul>
   </div>
 </nav>

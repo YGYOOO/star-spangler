@@ -130,14 +130,17 @@ td{
 }
 #avatarImg{
   border-radius:60px;
+  z-index: 700;
 }
 #avatarText{
+  z-index: 750;
   position: absolute;
-  margin: 50px 10px;
+  margin: 0px 10px;
   color: white;
-  opacity: 0;
+  opacity: 1;
 }
 #avatarCover{
+  z-index: 800;
   width: 120px;
   height: 120px;
   border-radius:60px;
@@ -150,15 +153,27 @@ td{
   color: white;
   opacity: 0;
 }
-#avatarCover:hover{
-  opacity: 0.4;
+#avatarBackground{
+  width: 120px;
+  height: 120px;
+  border-radius:60px;
+  float: left;
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 120px;
+  background-color: black;
+  opacity: 0.2;
 }
-#avatarCover:hover + #avatarText{
+#avatarCover:hover{
+  opacity: 0.5;
+}
+/*#avatarCover:hover + #avatarText{
   opacity: 0.9;
 }
 #avatarText:hover{
   opacity: 0.9;
-}
+}*/
 
 .name1{
   height: 75px;
@@ -188,10 +203,17 @@ td{
   z-index: 901;
   position: absolute !important;
   top:20px;
-  right:85px;
-  width: 200px !important;
+  right:70px;
+  width: 245px !important;
   opacity: 0;
 }
+
+/*#searchBtn{
+  position: absolute !important;
+  top:130px;
+  right: 130px;
+  opacity: 0;
+}*/
 
 #manageDocumentsList {
   position:relative;
@@ -202,3 +224,43 @@ td{
 .floatLeft{
   float:left !important;
 }
+
+.navAvatar{
+  border-radius: 30px;
+  margin-top:6.5px;
+  margin-right: 10px;
+}
+.navAvatarText{
+  z-index: 701;
+  position: absolute;
+  margin: -35px 5.5px;
+  color: white;
+  font-size: 8px;
+}
+.navAvatarCover{
+  z-index: 700;
+  width: 50px;
+  height: 50px;
+  margin-top:7px;
+  border-radius:30px;
+  float: left;
+  position: absolute;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 120px;
+  background-color: black;
+  color: white;
+  opacity: 0;
+}
+.navAvatarCover:hover{
+  opacity: 0.4;
+}
+/*.navAvatarCover:hover + .navAvatarText{
+  opacity: 0.9;
+}
+.navAvatarText:hover{
+  opacity: 0.9;
+}
+.navAvatarText:hover + .navAvatarCover{
+  opacity: 0.9;
+}*/

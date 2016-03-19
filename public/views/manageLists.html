@@ -1,0 +1,56 @@
+<nav ng-init="getUser()">
+  <div class="nav-wrapper teal lighten-2">
+    <a href="#" class="brand-logo center ">Star Spangler</a>
+    <ul id="nav-mobile" class="left hide-on-med-and-down">
+      <li><a href="/#/manageUsers">Manage Users</a></li>
+      <li><a href="/#/manageDocuments">Manage Documents</a></li>
+      <li><a href="/#/manageLists">Manage Lists</a></li>
+      <li><a href="/#/editProfile">Profile</a></li>
+    </ul>
+    <ul id="nav-mobile" onclick="logout()" ng-switch on="user.profile.avatarImage || 'undefined'" class="right hide-on-med-and-down">
+      <li ng-switch-default>
+        <div class="navAvatarCover"><p class="navAvatarText">logout</p></div>
+        <img class="navAvatar" width="50" height="50" ng-src="/api/avatar/{{user.profile.avatarImage}}">
+      </li>
+      <li ng-switch-when="undefined" ng-switch on="user.profile.userName || 'undefined'">
+        <a ng-switch-default>{{user.profile.userName}}</a>
+        <a ng-switch-when="undefined">{{user.emailAddress}}</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div id="manageDocumentsList" class="card-panel">
+  <table class="bordered">
+    <thead>
+      <tr>
+        <th width="44%">Documents List</th>
+        <th width="44%">Users List</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="list in lists" id="td-{{list._id}}">
+        <td>
+          <div class="floatLeft" ng-click="addMore('d-'+list._id)">
+            <i class="material-icons">add</i>
+          </div>
+          <div id="d-{{list._id}}" class="floatLeft" style="width:280px">
+            <div class="chip" ng-repeat="documentsList in list.documentsList">{{documentsList}}<i class="material-icons" onclick="deleteOne(this)">close</i></div>
+          </div>
+        </td>
+        <td>
+          <div class="floatLeft" ng-click="addMore('u-'+list._id)">
+            <i class="material-icons">add</i>
+          </div>
+          <div id="u-{{list._id}}" class="floatLeft" style="width:280px">
+            <div class="chip" ng-repeat="usersList in list.usersList">{{usersList}}<i class="material-icons" onclick="deleteOne(this)">close</i></div>
+          </div>
+        </td>
+        <td>
+          <a class="btn-floating waves-effect waves-light" ng-click="deleteList(list._id)"><i class="fa fa-times"></i></a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -37,22 +37,30 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
 
     $scope.addUser = function(){
       var body = {emailAddress: $scope.emailAddress}
-      Users.save(body, function(addedUser, responseHeaders){
-        $scope.users.push(addedUser);
+      Users.save(body, function(addedUser, responseHeaders){1
+        if(addedUser){
+          console.log(addedUser);
+          $scope.users.push(addedUser);
+        }
       });
     }
 
     $scope.addToList = function(email){
       if($('#listPanel').attr('class').indexOf('floatOut') > 0){
-        var exist = false;
-        for(var i=0; i<usersList.length; i++){
-          if(usersList[i] === email)
-              exist = true;
+        if(editThingId.split('-')[0] === 'u'){
+          var exist = false;
+          for(var i=0; i<usersList.length; i++){
+            if(usersList[i] === email)
+                exist = true;
+          }
+          if(!exist){
+            usersList.push(email);
+            var child = '<div class="chip documentChip" id="tag' + email + '">' + email + '<i class="material-icons">close</i></div>'
+            $('#list').append(child);
+          }
         }
-        if(!exist){
-          usersList.push(email);
-          var child = '<div class="chip documentChip" id="tag' + email + '">' + email + '<i class="material-icons">close</i></div>'
-          $('#list').append(child);
+        else {
+          Materialize.toast('You should add users!', 3000);
         }
       }
       else{
@@ -75,8 +83,9 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
 
 }]);
 
-Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$http',
+Document.controller('manageDocumentsController', ['$scope', '$resource', '$http',
   function($scope, $resource, $http){
+    $scope.typeSelected = false;
     $scope.getUser = function(){
       $.ajax('/api/user',
       {
@@ -90,15 +99,20 @@ Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$ht
 
     $scope.addToList = function(number){
       if($('#listPanel').attr('class').indexOf('floatOut') > 0){
-        var exist = false;
-        for(var i=0; i<documentsList.length; i++){
-          if(documentsList[i] === number)
-              exist = true;
+        if(editThingId.split('-')[0] === 'd'){
+          var exist = false;
+          for(var i=0; i<documentsList.length; i++){
+            if(documentsList[i] === number)
+                exist = true;
+          }
+          if(!exist){
+            documentsList.push(number);
+            var child = '<div class="chip documentChip" id="tag' + number + '">' + number + '<i class="material-icons">close</i></div>'
+            $('#list').append(child);
+          }
         }
-        if(!exist){
-          documentsList.push(number);
-          var child = '<div class="chip documentChip" id="tag' + number + '">' + number + '<i class="material-icons">close</i></div>'
-          $('#list').append(child);
+        else {
+          Materialize.toast('You should add documents!', 3000);
         }
       }
       else{
@@ -117,9 +131,13 @@ Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$ht
       }
     };
 
-    $scope.getDocuments = function(term, type){
-      var Document = $resource('/api/documents/order=relevance&page=1&conditions[term]=' + term +
-      '&conditions[type]=' + type);
+    $scope.getDocuments = function(term, types){
+      var typeString = '';
+      $.each(types, function(index, value){
+        typeString = typeString + '&conditions[type]=' + value;
+      });
+      var Document = $resource('/api/documents/order=relevance&page=1&conditions[term]=' + term + typeString);
+      console.log('/api/documents/order=relevance&page=1&conditions[term]=' + term + typeString);
       $scope.articles = Document.get();
     };
 
@@ -140,6 +158,8 @@ Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$ht
 
     $('#search').on('click', function(e){
       $('#selectType').animate({top:'60px',opacity:'1'});
+      $scope.typeSelected = true;
+      // $('#searchBtn').animate({opacity:'1'});
     });
 
     $('#search').on('keypress', function(e){
@@ -149,20 +169,27 @@ Document.controller('viewDocumentsAdminController', ['$scope', '$resource', '$ht
     });
 
     $('#selectType').change(function(){
-      $scope.getDocuments($('#search').val(), $('#typeSelector').val());
+       $('#typeSelector').val();
+      $scope.typeSelected = true;
     });
 
     $(document).on('click', function(e){
       var target = e.target;
       if(!$(target).is('#selectType') && !$(target).is('#search')){
         $('#selectType').animate({top:'20px',opacity:'0'});
+        if($scope.typeSelected){
+          $scope.getDocuments($('#search').val(), $('#typeSelector').val());
+          $scope.typeSelected = false;
+          $('#typeSelector').val('');
+          $('select').material_select();
+        }
       }
     });
   }]);
 
-Document.controller('manageDocumentsController', ['$scope', '$resource', '$location',
+Document.controller('manageListsController', ['$scope', '$resource', '$location',
   function($scope, $resource, $location){
-    var list = $resource('/api/documents');
+    var list = $resource('/api/documentsList');
     list.query(function(result){
       $scope.lists = result;
       $.each(result, function(index, value){
@@ -182,10 +209,31 @@ Document.controller('manageDocumentsController', ['$scope', '$resource', '$locat
     };
     $scope.addMore = function(id){
       editThingId = id;
+      console.log(id);
+      if(id.split('-')[0] === 'u'){
+        $location.path('/manageUsers');
+        $("#list").empty();
+        $("#listPanel").children('p').empty();
+        $("#listPanel").children('p').append("Click '+' to add users");
+      }
+      if(id.split('-')[0] === 'd'){
+        $location.path('/manageDocuments');
+        $("#list").empty();
+        $("#listPanel").children('p').empty();
+        $("#listPanel").children('p').append("Click '+' to add documents");
+      }
       $("#listPanel").addClass('floatOut');
       $("#listPanel").removeClass('floatIn');
-    }
-
+    };
+    $scope.deleteList = function(id){
+      var list2 = $resource('/api/documentsList/'+id);
+      list2.delete({listId: id}, function(result){
+        console.log(result);
+        if(result){
+          $( "#td-" + id ).fadeOut("fast");
+        }
+      });
+    };
   }
 ]);
 Document.controller('loginController', ['$scope', '$resource', '$location',
@@ -211,7 +259,7 @@ Document.controller('loginController', ['$scope', '$resource', '$location',
 Document.controller('viewDocumentsController', ['$scope', '$resource', '$location', '$timeout',
 function($scope, $resource, $location, $timeout){
   $scope.getDocuments = function(emailAddress){
-    var Documents = $resource('/api/documents/' + emailAddress);
+    var Documents = $resource('/api/users/' + emailAddress + '/documents');
     $scope.documents = Documents.get();
   };
 
@@ -321,7 +369,7 @@ Document.controller('editProfileController',['$scope', '$resource', '$location',
         processData: false,
         contentType: false,
         success: function(result){
-
+          $scope.getUser();
         }
       });
     }

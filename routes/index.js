@@ -40,12 +40,16 @@ router.post('/api/login', function(req, res, next){
     if(!(result === null) && result.password === req.body.password){
       req.session.user = result;
       res.send(result);
-      console.log('logged in');
     }
     else{
       console.log('-1');
     }
   });
+});
+
+router.get('/api/logout', function(req, res, next){
+  req.session.reset();
+  res.send(true);
 });
 
 var requireAuthentication = function(req, res, next){
@@ -74,7 +78,10 @@ router.post('/api/users', function(req, res, next){
     if(result){
       star.userFindOne(req.body.emailAddress, function(err, result){
         res.send(result);
-      })
+      });
+    }
+    else {
+      res.send(false);
     }
   });
 });
@@ -103,10 +110,7 @@ router.put('/api/users/:emailAddress/type', function(req, res, next){
 
 router.get('/api/documents/:url', function(req, res, next){
   var host = 'www.federalregister.gov';
-  // var path = '/api/v1/articles?order=relevance&page=' + req.query.page +
-  // '&conditions[term]=' + (req.query.term || '') + '&conditions[type]=' +(req.query.type || '');
   var path = '/api/v1/articles?' + req.params.url;
-  console.log(path);
   var options = {
     host: host,
     path: path,
@@ -119,8 +123,8 @@ router.get('/api/documents/:url', function(req, res, next){
 });
 
 
-router.post('/api/documents', function(req, res, next){
-  star.documentsCreate(req.body.usersList, req.body.documentsList, function(err, results){
+router.post('/api/documentsList', function(req, res, next){
+  star.documentsListCreate(req.body.usersList, req.body.documentsList, function(err, results){
     if(err){
       res.send(false);
     }
@@ -130,7 +134,7 @@ router.post('/api/documents', function(req, res, next){
   });
 });
 
-router.get('/api/documents', function(req, res, next){
+router.get('/api/documentsList', function(req, res, next){
   star.documentsListFind(function(err, results){
     if(err){
       res.send(err);
@@ -141,10 +145,29 @@ router.get('/api/documents', function(req, res, next){
   });
 });
 
-router.get('/api/documents/:emailAddress', function(req, res, next){
+router.put('/api/documentsList/:listId', function(req, res, next){
+  star.documentsListUpdate(req.params.listId, req.body, function(err, result){
+    if(err){
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+router.delete('/api/documentsList/:listId', function(req, res, next){
+  star.documentsListDelete(req.params.listId, function(err, result){
+    if(!err){
+      res.send(result);
+    }
+  });
+});
+
+router.get('/api/users/:emailAddress/documents', function(req, res, next){
   star.documentsFind(req.params.emailAddress, function(err, results){
+    var documents = '';
     if(results){
-      var documents = '';
       results.forEach(function(result, i, array){
         var d = result.documentsList.split(',');
         d.forEach(function(r){
@@ -152,18 +175,21 @@ router.get('/api/documents/:emailAddress', function(req, res, next){
             documents = documents + r + ',';
         })
       });
-      documents = documents.substring(0, documents.length - 1);
-      var host = 'www.federalregister.gov';
-      var path = '/api/v1/articles/' + documents
-      var options = {
-        host: host,
-        path: path,
-        method: 'GET'
-      };
+      console.log(documents);
+      if(documents){
+        documents = documents.substring(0, documents.length - 1);
+        var host = 'www.federalregister.gov';
+        var path = '/api/v1/articles/' + documents
+        var options = {
+          host: host,
+          path: path,
+          method: 'GET'
+        };
 
-      remoteGet(options, function(status, data){
-        res.status(status).send(data);
-      });
+        remoteGet(options, function(status, data){
+          res.status(status).send(data);
+        });
+      }
     }
     else {
 
@@ -172,7 +198,6 @@ router.get('/api/documents/:emailAddress', function(req, res, next){
 });
 
 router.put('/api/users/:emailAddress/rankedDocuments', function(req, res, next){
-console.log('2323');
   star.documentRate(req.params.emailAddress, req.body.dNumber, req.body.rank, function(err, result){
     if (result) {
       res.send(true);
@@ -191,9 +216,12 @@ router.post('/api/users/:emailAddress/avatar', multer.single('avatar'), function
     tags : JSON.parse( req.body.tags ),
     imageId : req.file.filename
   };
-  star.avatarUpdate(req.params.emailAddress, req.file.filename, function(err, avatar){
-    if(avatar){
-      res.send(avatar);
+  star.avatarUpdate(req.params.emailAddress, req.file.filename, function(err, count){
+    if(err){
+      res.status(403).send(err);
+    }
+    else if(count > 0){
+      res.send(true);
     }
   });
 });
@@ -201,5 +229,6 @@ router.post('/api/users/:emailAddress/avatar', multer.single('avatar'), function
 router.get('/api/avatar/:id', function( req, res, next ) {
    res.sendFile( req.params.id, { root : PHOTO_DIRECTORY } );
 });
+
 
 module.exports = router;

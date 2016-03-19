@@ -1,24 +1,34 @@
-<div ng-init="getUser()">
-
-<nav>
+<nav ng-init="getUser()">
   <div class="nav-wrapper teal lighten-2">
     <a href="#" class="brand-logo center ">Star Spangler</a>
-    <ul id="nav-mobile" class="left hide-on-med-and-down">
-      <li><a href="/#/viewDocuments">View Documents</a></li>
-      <li><a href="/#/editProfile">Edit Profile</a></li>
+    <ul id="nav-mobile" class="left hide-on-med-and-down" ng-switch on="user.userType">
+      <li ng-switch-default><a href="/#/viewDocuments">Documents</a></li>
+      <li ng-switch-default><a href="/#/editProfile">Profile</a></li>
+      <li ng-switch-when="admin"><a href="/#/manageUsers">Manage Users</a></li>
+      <li ng-switch-when="admin"><a href="/#/manageDocuments">Manage Documents</a></li>
+      <li ng-switch-when="admin"><a href="/#/manageLists">Manage Lists</a></li>
+      <li ng-switch-when="admin"><a href="/#/editProfile">Profile</a></li>
     </ul>
-    <ul id="nav-mobile" ng-switch on="user.profile.userName || 'undefined'" class="right hide-on-med-and-down">
-      <li ng-switch-when="undefined"><a href="/#/">{{user.emailAddress}}</a></li>
-      <li ng-switch-default><a href="/#/">{{user.profile.userName}}</a></li>
+    <ul id="nav-mobile" onclick="logout()" ng-switch on="user.profile.avatarImage || 'undefined'" class="right hide-on-med-and-down">
+      <li ng-switch-default>
+        <div class="navAvatarCover"><p class="navAvatarText">logout</p></div>
+        <img class="navAvatar" width="50" height="50" ng-src="/api/avatar/{{user.profile.avatarImage}}">
+      </li>
+      <li ng-switch-when="undefined" ng-switch on="user.profile.userName || 'undefined'">
+        <a ng-switch-default>{{user.profile.userName}}</a>
+        <a ng-switch-when="undefined">{{user.emailAddress}}</a>
+      </li>
     </ul>
   </div>
 </nav>
 
 <div class="profile card-panel">
-  <div id="avatar">
-    <div id="avatarCover" ng-click="changeAvatar()"></div>
-    <p id="avatarText" ng-click="changeAvatar()"> Change Avatar</p>
-    <img id="avatarImg" width="120" height="120" ng-src="/api/avatar/{{user.profile.avatarImage}}">
+  <div id="avatar" ng-switch on="user.profile.avatarImage || 'undefined'">
+    <div id="avatarCover" ng-click="changeAvatar()"><p id="avatarText"> Change Avatar</p></div>
+    <div ng-switch on="user.profile.avatarImage || 'undefined'">
+      <img ng-switch-default id="avatarImg" width="120" height="120" ng-src="/api/avatar/{{user.profile.avatarImage}}">
+      <div ng-switch-when="undefined"  id="avatarBackground"></div>
+    </div>
   </div>
   <input type="file" id="uploadPhoto" style="display: none" />
   <div class="row">

@@ -1,4 +1,6 @@
-var mongoClient = require('mongodb').MongoClient;
+var mongodb = require('mongodb');
+var mongoClient = mongodb;
+var ObjectId = mongodb.ObjectID;
 var url = "mongodb://localhost:27017/starSpangler";
 
 var createUser = function(db, emailAddress, password, callback){
@@ -71,7 +73,7 @@ var updateUserType = function(db, e, type, callback){
   });
 }
 
-var createDocuments = function(db, usersList, documentsList, callback){
+var createDocumentsList = function(db, usersList, documentsList, callback){
   db.collection('document').insertOne({usersList: usersList, documentsList: documentsList}, function(err, writeResult){
     if(writeResult.result.ok !== 1){
       callback(err, null);
@@ -93,8 +95,33 @@ var findDocumentsList = function(db, callback){
   });
 }
 
+var updateDocumentsList = function(db, listId, body, callback){
+  db.collection('document').update({_id: ObjectId(listId)}, body, function(err, count){
+    if(err){
+      callback(err, null);
+    }
+    else if(count.nModified > 0) {
+      callback(null, true);
+    }
+    else {
+      callback(false, false);
+    }
+  });
+}
+
+var deleteDocumentsList = function(db, listId, callback){
+  db.collection('document').deleteOne({_id: ObjectId(listId)} ,function(err, result){
+    if(err){
+      callback(err, null);
+    }
+    else {
+      callback(null, result);
+    }
+  });
+}
+
 var findDocuments = function(db, emailAddress, callback){
-  var text = ".*gu.*";
+  var text = emailAddress;
   var documents = '';
   db.collection('document').find({"usersList" : new RegExp(text)}).toArray(function(err, result){
     if(result){
@@ -168,11 +195,10 @@ var avatarSave = function(db, emailAddress, avatar, callback){
     {$set: {"profile.avatarImage": avatar}},
     function(err, result){
       if(err){
-
+        callback(err, null);
       }
       else {
-        console.log(result.result.nModified);
-
+        callback(null, result.result.nModified)
       }
     }
   );
@@ -231,13 +257,13 @@ module.exports.userCreate = function(emailAddress, callback){
   });
 }
 
-module.exports.documentsCreate = function(usersList, documentsList, callback){
+module.exports.documentsListCreate = function(usersList, documentsList, callback){
   mongoClient.connect(url, function(err, db){
     if (err) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     }
     else {
-      createDocuments(db, usersList, documentsList, function(err, result){
+      createDocumentsList(db, usersList, documentsList, function(err, result){
         db.close();
         if(err){
           callback(err, null);
@@ -249,6 +275,7 @@ module.exports.documentsCreate = function(usersList, documentsList, callback){
     }
   });
 }
+
 module.exports.documentsListFind = function(callback){
   mongoClient.connect(url, function(err, db){
     if (err) {
@@ -262,6 +289,50 @@ module.exports.documentsListFind = function(callback){
         }
         else {
          callback(null, result);
+        }
+      });
+    }
+  });
+}
+
+module.exports.documentsListUpdate = function(listId ,body, callback){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      updateDocumentsList(db, listId, body, function(err, result){
+        db.close();
+        if(err){
+          callback(err, null);
+        }
+        else if(result) {
+          callback(null, true);
+        }
+        else{
+          callback(null, null);
+        }
+      });
+    }
+  });
+}
+
+module.exports.documentsListDelete = function(listId ,callback){
+  mongoClient.connect(url, function(err, db){
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    }
+    else {
+      deleteDocumentsList(db, listId, function(err, result){
+        db.close();
+        if(err){
+          callback(err, null);
+        }
+        else if(result.result.n > 0 ) {
+          callback(null, true);
+        }
+        else{
+          callback(null, null);
         }
       });
     }
