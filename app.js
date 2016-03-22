@@ -10,8 +10,8 @@ var app = express();
 app.use(session({
   cookieName: 'session',
   secret: 'A#*BAKRAABLGOA@G!ej%d>d3hGOAbkao35DF',
-  duration: 180*1000,
-  activeDuration: 180*1000
+  duration: 120*1000,
+  activeDuration: 120*1000
 }));
 
 app.use(bodyParser.json());

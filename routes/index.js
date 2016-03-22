@@ -22,7 +22,6 @@ var remoteGet = function(options, callback){
          str = JSON.parse( str );
       } catch(err) {
       }
-
       callback(res.statusCode, str);
     })
   });
@@ -172,10 +171,11 @@ router.get('/api/users/:emailAddress/documents', function(req, res, next){
         var d = result.documentsList.split(',');
         d.forEach(function(r){
           if(!documents.includes(r))
+          {
             documents = documents + r + ',';
+          }
         })
       });
-      console.log(documents);
       if(documents){
         documents = documents.substring(0, documents.length - 1);
         var host = 'www.federalregister.gov';

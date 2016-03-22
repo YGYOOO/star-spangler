@@ -5,23 +5,38 @@
       <li><a href="/#/viewDocuments">Documents</a></li>
       <li><a href="/#/editProfile">Profile</a></li>
     </ul>
-    <ul id="nav-mobile" onclick="logout()" ng-switch on="user.profile.avatarImage || 'undefined'" class="right hide-on-med-and-down">
-      <li ng-switch-default>
+    <ul id="nav-mobile" ng-switch on="user.profile.avatarImage || 'undefined'" class="right hide-on-med-and-down">
+      <li>
+        <form class=" teal lighten-3">
+          <div class="input-field">
+            <input id="search" type="search" ng-model="query">
+            <label for="search"><i class="mdi-action-search"></i></label><i class="mdi-navigation-close close"></i>
+          </div>
+        </form>
+      </li>
+      <li ng-switch-default onclick="logout()">
         <div class="navAvatarCover"><p class="navAvatarText">logout</p></div>
         <img class="navAvatar" width="50" height="50" ng-src="/api/avatar/{{user.profile.avatarImage}}">
       </li>
-      <li ng-switch-when="undefined" ng-switch on="user.profile.userName || 'undefined'">
+      <li onclick="logout()" ng-switch-when="undefined" ng-switch on="user.profile.userName || 'undefined'">
         <a ng-switch-default>{{user.profile.userName}}</a>
         <a ng-switch-when="undefined">{{user.emailAddress}}</a>
       </li>
     </ul>
   </div>
 </nav>
-
+<div class="input-field" id="selectType2">
+  <select id="typeSelector">
+      <option value="" selected>Filter By</option>
+      <option value="NotReviewed">Not Reviewed</option>
+      <option value="Reviewed">Reviewed</option>
+      <option value="All">All</option>
+  </select>
+</div>
 <div id="documents" class="document">
   <ul class="collapsible" data-collapsible="accordion">
-    <li ng-repeat="document in documents.results" my-repeat-directive>
-      <div class="collapsible-header">{{document.title}}
+    <li ng-repeat="document in documents.results | orderBy: '-rank' | filter:{title:query, rank: selected}" my-repeat-directive>
+      <div class="collapsible-header">{{document.title}}{{document.rank}}
       </div>
       <div class="collapsible-body">
         <div class="rateYo" id="rate_{{document.document_number}}"></div>
@@ -33,8 +48,11 @@
 </div>
 <script type="text/javascript">
 $(document).ready(function(){
-  $('.collapsible').collapsible({
-    accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+  $(document).ready(function(){
+    $('.collapsible').collapsible({
+      accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+    });
+    $('select').material_select();
   });
 });
 </script>

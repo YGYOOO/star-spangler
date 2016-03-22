@@ -37,10 +37,12 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
 
     $scope.addUser = function(){
       var body = {emailAddress: $scope.emailAddress}
-      Users.save(body, function(addedUser, responseHeaders){1
-        if(addedUser){
-          console.log(addedUser);
+      Users.save(body, function(addedUser, responseHeaders){
+        if(addedUser._id){
           $scope.users.push(addedUser);
+        }
+        else{
+          Materialize.toast('Failed to add user', 3000);
         }
       });
     }
@@ -83,19 +85,20 @@ Document.controller('manageUsersController', ['$scope', '$resource', '$location'
 
 }]);
 
-Document.controller('manageDocumentsController', ['$scope', '$resource', '$http',
-  function($scope, $resource, $http){
+Document.controller('manageDocumentsController', ['$scope', '$resource', '$http', '$timeout', '$location',
+  function($scope, $resource, $http, $timeout, $location){
     $scope.typeSelected = false;
+    $scope.firstTime = true;
     $scope.getUser = function(){
       $.ajax('/api/user',
       {
         type: 'GET',
-        success: function(u){ $scope.user = u;$scope.$apply()},
-        error: function(e){$location.path('/');$scope.$apply()}
+        success: function(u){ $scope.user = u;$scope.$apply();},
+        error: function(e){$location.path('/');$scope.$apply();}
       });
     };
     var Articles = $resource('/api/documents/order=relevance&page=1&conditions[term]=&conditions[type]=');
-    $scope.articles = Articles.get();
+    $scope.articles = Articles.get(function(){setTimeout(function(){ $('.document').animate({opacity:1},{duration: 200}, 'swing')}, 700);});
 
     $scope.addToList = function(number){
       if($('#listPanel').attr('class').indexOf('floatOut') > 0){
@@ -137,7 +140,6 @@ Document.controller('manageDocumentsController', ['$scope', '$resource', '$http'
         typeString = typeString + '&conditions[type]=' + value;
       });
       var Document = $resource('/api/documents/order=relevance&page=1&conditions[term]=' + term + typeString);
-      console.log('/api/documents/order=relevance&page=1&conditions[term]=' + term + typeString);
       $scope.articles = Document.get();
     };
 
@@ -256,11 +258,25 @@ Document.controller('loginController', ['$scope', '$resource', '$location',
   }
 ]);
 
-Document.controller('viewDocumentsController', ['$scope', '$resource', '$location', '$timeout',
-function($scope, $resource, $location, $timeout){
+Document.controller('viewDocumentsController', ['$scope', '$resource', '$location', '$timeout', '$filter',
+function($scope, $resource, $location, $timeout, $filter){
   $scope.getDocuments = function(emailAddress){
     var Documents = $resource('/api/users/' + emailAddress + '/documents');
-    $scope.documents = Documents.get();
+    $scope.documents = Documents.get(function(){
+      var hasRank = false;
+      $scope.documents.results.forEach(function(r, index){
+        hasRank = false;
+        $scope.user.rankedDocuments.forEach(function(j){
+          if(r.document_number === j.documentNumber){
+            $scope.documents.results[index].rank = 'ranked';
+            hasRank = true;
+          }
+        });
+        if(!hasRank){
+          $scope.documents.results[index].rank = 'unrank';
+        }
+      });
+    });
   };
 
   $scope.getUser = function(){
@@ -291,7 +307,6 @@ function($scope, $resource, $location, $timeout){
     $timeout(
       function(){
         $.each($scope.user.rankedDocuments, function(index, value){
-          console.log(value.documentNumber + ' ' + value.rank);
           $('#rate_' + value.documentNumber).addClass('rank' + value.rank);
         });
         $(".rank1").rateYo({
@@ -329,12 +344,41 @@ function($scope, $resource, $location, $timeout){
         });
       },
     500);
+
+    $('#search').on('click', function(e){
+      $('#selectType2').animate({top:'60px',opacity:'1'});
+    });
+
+    $('#selectType2').change(function(){
+       if($('#typeSelector').val() === 'Reviewed'){
+         $scope.selected = 'ranked';
+         $scope.$apply();
+       }
+       else if($('#typeSelector').val() === 'NotReviewed'){
+         $scope.selected = 'unrank';
+         $scope.$apply();
+       }
+       else{
+         $scope.selected = '';
+         $scope.$apply();
+       }
+    });
+
+    $(document).on('click', function(e){
+      var target = e.target;
+      if(!$(target).is('#selectType') && !$(target).is('#search')){
+        $('#selectType2').animate({top:'20px',opacity:'0'});
+        $('#typeSelector').val('');
+        $('select').material_select();
+      }
+    });
   }
 }]).directive('myRepeatDirective', function() {
   return function($scope) {
     if ($scope.$last){
       $scope.initRank();
     }
+    $scope.orderProp = '';
   };
 });
 
@@ -349,6 +393,11 @@ Document.controller('editProfileController',['$scope', '$resource', '$location',
         type: 'GET',
         success: function(u){ $scope.user = u;$scope.$apply();
         $('#favoriteThings').materialtags('add', u.profile.favoriteThings.toString());
+        if($scope.user.profile.phones < 1){
+          $scope.user.profile.phones = '';
+        }
+        console.log($scope.user);
+        $scope.$apply();
         },
         error: function(e){$location.path('/');$scope.$apply()}
       });
@@ -374,13 +423,12 @@ Document.controller('editProfileController',['$scope', '$resource', '$location',
       });
     }
     $scope.addPhone = function(){
-      var content = '<div class="row">'+
+      var content =
           '  <div class="input-field col s12">'+
 '              <input type="text" class="phones"">'+
 '              <label>Phone Number</label>'+
             '  <p class="deletePhone"><i class="fa fa-times delete"></i></p>'+
-'            </div>'+
-          '</div>';
+'            </div>';
       $('#addPhone').before(content);
     };
 

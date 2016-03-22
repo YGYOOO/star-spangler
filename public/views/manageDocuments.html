@@ -7,12 +7,20 @@
       <li><a href="/#/manageLists">Manage Lists</a></li>
       <li><a href="/#/editProfile">Profile</a></li>
     </ul>
-    <ul id="nav-mobile" onclick="logout()" ng-switch on="user.profile.avatarImage || 'undefined'" class="right hide-on-med-and-down">
-      <li ng-switch-default>
+    <ul id="nav-mobile" ng-switch on="user.profile.avatarImage || 'undefined'" class="right hide-on-med-and-down">
+      <li>
+        <form class=" teal lighten-3">
+          <div class="input-field">
+            <input id="search" type="search"/>
+            <label for="search"><i class="mdi-action-search"></i></label><i class="mdi-navigation-close close"></i>
+          </div>
+        </form>
+      </li>
+      <li ng-switch-default onclick="logout()">
         <div class="navAvatarCover"><p class="navAvatarText">logout</p></div>
         <img class="navAvatar" width="50" height="50" ng-src="/api/avatar/{{user.profile.avatarImage}}">
       </li>
-      <li ng-switch-when="undefined" ng-switch on="user.profile.userName || 'undefined'">
+      <li onclick="logout()" ng-switch-when="undefined" ng-switch on="user.profile.userName || 'undefined'">
         <a ng-switch-default>{{user.profile.userName}}</a>
         <a ng-switch-when="undefined">{{user.emailAddress}}</a>
       </li>
@@ -43,6 +51,48 @@
       </div>
     </li>
   </ul>
+</div>
+<br><br>
+<div class="preloader-wrapper big active">
+  <div class="spinner-layer spinner-blue">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+
+  <div class="spinner-layer spinner-red">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+
+  <div class="spinner-layer spinner-yellow">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
+
+  <div class="spinner-layer spinner-green">
+    <div class="circle-clipper left">
+      <div class="circle"></div>
+    </div><div class="gap-patch">
+      <div class="circle"></div>
+    </div><div class="circle-clipper right">
+      <div class="circle"></div>
+    </div>
+  </div>
 </div>
 <br>
 <script type="text/javascript">

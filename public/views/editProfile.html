@@ -21,7 +21,6 @@
     </ul>
   </div>
 </nav>
-
 <div class="profile card-panel">
   <div id="avatar" ng-switch on="user.profile.avatarImage || 'undefined'">
     <div id="avatarCover" ng-click="changeAvatar()"><p id="avatarText"> Change Avatar</p></div>
@@ -41,7 +40,7 @@
   <div class="row">
     <div class="input-field col s12">
       <i class="material-icons prefix">email</i>
-      <input id="emailAddress" type="text" value="{{user.profile.emailAddress}}">
+      <input id="emailAddress" type="text" value="{{user.emailAddress}}">
       <label for="emailAddress">Email Address</label>
     </div>
   </div>
@@ -59,16 +58,20 @@
       </div>
     </div>
   </div>
-
-    <div class="row phone1" ng-repeat="phone in user.profile.phones">
-      <div class="input-field col s12">
+    <div class="row phone1" ng-switch on="user.profile.phones || 'undefined'">
+      <div class="input-field col s12" ng-switch-when="undefined">
         <input type="text" class="phones" value="{{phone}}">
         <label>Phone Number</label>
         <p class="deletePhone"><i class="fa fa-times delete" style="font-size:15px;"></i></p>
       </div>
+      <div class="input-field col s12" ng-repeat="phone in user.profile.phones" ng-switch-default>
+        <input type="text" class="phones" value="{{phone}}">
+        <label>Phone Number</label>
+        <p class="deletePhone"><i class="fa fa-times delete" style="font-size:15px;"></i></p>
+      </div>
+      <p id="addPhone" class="hvr-grow" ng-click="addPhone()" style="margin-top:-65px"><i class="fa fa-plus" style="font-size:15px;"></i></p>
     </div>
 
-  <p id="addPhone" class="hvr-grow" ng-click="addPhone()" style="margin-top:-65px"><i class="fa fa-plus" style="font-size:15px;"></i></p>
   <div class="row">
     <div class="input-field col s12">
       <input type="text" data-role="materialtags" id="favoriteThings">
@@ -84,7 +87,7 @@
 <script src="javascripts/materialize-tags.min.js"></script>
 <script type="text/javascript">
   $( ".profile" ).on( "click", ".deletePhone",function() {
-    var a = $(this).parent().parent().remove();
+    var a = $(this).parent().remove();
     console.log(a);
   });
 </script>

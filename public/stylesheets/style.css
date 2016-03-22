@@ -61,6 +61,7 @@ td{
   top:30px;
   width: 800px;
   margin: 0 auto;
+  opacity: 0;
 }
 
 .selectedPanel{
@@ -185,8 +186,10 @@ td{
 }
 
 #addPhone{
-  margin-top: -50px;
-  margin-bottom:0px
+  float:left;
+  position:relative;;
+  top:40px;
+  left:234px;
 }
 
 .delete{
@@ -208,12 +211,14 @@ td{
   opacity: 0;
 }
 
-/*#searchBtn{
+#selectType2{
+  z-index: 901;
   position: absolute !important;
-  top:130px;
-  right: 130px;
+  top:20px;
+  right:110px;
+  width: 150px !important;
   opacity: 0;
-}*/
+}
 
 #manageDocumentsList {
   position:relative;
@@ -229,19 +234,21 @@ td{
   border-radius: 30px;
   margin-top:6.5px;
   margin-right: 10px;
+  margin-left: 10px;
 }
 .navAvatarText{
   z-index: 701;
   position: absolute;
   margin: -35px 5.5px;
   color: white;
-  font-size: 8px;
+  font-size: 11px;
 }
 .navAvatarCover{
   z-index: 700;
   width: 50px;
   height: 50px;
   margin-top:7px;
+  margin-left: 10px;
   border-radius:30px;
   float: left;
   position: absolute;
