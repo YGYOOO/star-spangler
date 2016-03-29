@@ -36,9 +36,9 @@
       <option value="PRORULE">Proposed Rule</option>
   </select>
 </div>
-<div class="document">
-  <ul class="collapsible" data-collapsible="accordion">
-    <li ng-repeat="article in articles.results">
+<div class="document z-depth-0">
+  <ul class="collapsible z-depth-0" data-collapsible="accordion">
+    <li class="documents z-depth-1" ng-repeat="article in articles.results" my-repeat-directive2>
       <div class="grey lighten-5 documentNumber" >
         <i class="tiny material-icons" >label_outline</i>{{article.document_number}}
         <i class="material-icons" style="float:right; margin-top:-3px" ng-click="addToList(article.document_number)">add</i>

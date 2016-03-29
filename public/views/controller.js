@@ -98,7 +98,9 @@ Document.controller('manageDocumentsController', ['$scope', '$resource', '$http'
       });
     };
     var Articles = $resource('/api/documents/order=relevance&page=1&conditions[term]=&conditions[type]=');
-    $scope.articles = Articles.get(function(){setTimeout(function(){ $('.document').animate({opacity:1},{duration: 200}, 'swing')}, 700);});
+    $scope.articles = Articles.get(function(){
+    });
+
 
     $scope.addToList = function(number){
       if($('#listPanel').attr('class').indexOf('floatOut') > 0){
@@ -187,7 +189,18 @@ Document.controller('manageDocumentsController', ['$scope', '$resource', '$http'
         }
       }
     });
-  }]);
+  }]).directive('myRepeatDirective2', function() {
+    return function($scope) {
+      if ($scope.$last){
+        var begin = $scope.articles.results.length - 21;
+        var count = 0;
+        $('.documents').each(function(index, value){
+          if(index>begin)
+          setTimeout(function(){$('.documents').eq(index).addClass('show')}, count++ * 100);
+        });
+      }
+    };
+  });
 
 Document.controller('manageListsController', ['$scope', '$resource', '$location',
   function($scope, $resource, $location){
@@ -379,6 +392,10 @@ function($scope, $resource, $location, $timeout, $filter){
       $scope.initRank();
     }
     $scope.orderProp = '';
+    var count = 0;
+    $('.documents').each(function(index, value){
+      setTimeout(function(){$('.documents').eq(index).addClass('show')}, count++ * 100);
+    });
   };
 });
 

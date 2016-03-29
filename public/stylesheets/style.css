@@ -61,7 +61,20 @@ td{
   top:30px;
   width: 800px;
   margin: 0 auto;
+}
+.collapsible{
+  text-shadow: 0px !important;
+  border-width: 0px !important;
+}
+.documents{
   opacity: 0;
+  transform: rotateX(-90deg);
+  transition: all 0.5s cubic-bezier(.36,-0.64,.34,1.76);
+}
+.documents.show{
+  opacity: 1;
+  transform: none;
+  transition: all 0.5s cubic-bezier(.36,-0.64,.34,1.76);
 }
 
 .selectedPanel{

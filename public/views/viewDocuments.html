@@ -34,8 +34,8 @@
   </select>
 </div>
 <div id="documents" class="document">
-  <ul class="collapsible" data-collapsible="accordion">
-    <li ng-repeat="document in documents.results | orderBy: '-rank' | filter:{title:query, rank: selected}" my-repeat-directive>
+  <ul class="collapsible z-depth-0" data-collapsible="accordion">
+    <li class="documents z-depth-1" ng-repeat="document in documents.results | orderBy: '-rank' | filter:{title:query, rank: selected}" my-repeat-directive>
       <div class="collapsible-header">{{document.title}}{{document.rank}}
       </div>
       <div class="collapsible-body">
